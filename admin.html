@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4d6/512.png" type="image/png">
+    <title>Panel de Administración - Catálogo de Escritoras Latinoamericanas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="nav-simple">
+        <a href="index.html">← Volver al catálogo público</a>
+    </nav>
+
+    <main class="form-container-main">
+        
+        <div class="form-card">
+            <h1 id="form-title">Añadir Nueva Obra</h1>
+            <p class="form-subtitle">Gestiona los libros de la colección desde aquí.</p>
+            
+            <form id="book-form" enctype="multipart/form-data">
+                <input type="hidden" id="book-id">
+
+                <div class="form-group">
+                    <label for="title">Título de la obra</label>
+                    <input type="text" id="title" placeholder="Ej: La casa de los espíritus" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="author_select">Seleccionar Autora</label>
+                    <div class="author-controls-row">
+                        <select id="author_select" class="select-main" required>
+                            <option value="">Cargando autoras...</option>
+                        </select>
+                        <button type="button" onclick="toggleNewAuthorForm()" class="btn-tool">+ Nueva</button>
+                        <button type="button" onclick="loadAuthorDataForEdit()" class="btn-tool">Editar</button>
+                    </div>
+                </div>
+
+                <div id="new-author-section" class="author-mini-form">
+                    <h3>Registrar/Editar Autora</h3>
+                    <input type="hidden" id="edit-author-id">
+                    <div class="form-group">
+                        <input type="text" id="new-author-name" placeholder="Nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="new-author-country" placeholder="País de origen">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-author-bio">Biografía</label>
+                        <textarea id="new-author-bio" placeholder="Escribe una breve biografía..."></textarea>
+                    </div>    
+                    <button type="button" onclick="saveAuthor()" class="btn-author-save">Guardar Autora</button>
+                </div>
+
+                <div class="form-group">
+                    <label for="short_description">Reseña Corta</label>
+                    <input type="text" id="short_description" placeholder="Ej: Relatos sobre la vida..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="synopsis">Sinopsis</label>
+                    <textarea id="synopsis" rows="4" placeholder="Breve resumen del libro..."></textarea>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="publisher">Editorial</label>
+                        <input type="text" id="publisher" placeholder="Editorial">
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Año</label>
+                        <input type="number" id="year" placeholder="Año de publicación">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="genre">Género</label>
+                        <input type="text" id="genre" placeholder="Ej: Novela">
+                    </div>
+                    <div class="form-group">
+                        <label for="cover_file">Imagen de Portada</label>
+                        <input type="file" id="cover_file" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="button-group-row">
+                    <button type="submit" class="btn-save" id="btn-submit">Guardar Libro</button>
+                    <button type="button" id="btn-cancel" onclick="resetBookForm()">
+                        Cancelar Edición
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-card">
+            <h2>Libros Registrados</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Portada</th>
+                            <th>Título</th>
+                            <th>Autora</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+     <footer class="main-footer">
+        <p>&copy; 2026 - Programación Web | Catálogo de Escritoras Latinoamericanas</p>
+    </footer>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>

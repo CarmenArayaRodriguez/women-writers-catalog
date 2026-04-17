@@ -1,323 +1,414 @@
 /* =========================================
-   1. ESTILOS BASE: Configuración de paleta cromática y tipografía.
+   1. ESTILOS BASE
    ========================================= */
 body {
-    font-family: 'Segoe UI', serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4ece1;
-    color: #4e342e;
+  font-family: sans-serif;
+  margin: 0;
+  background-color: #f4ece1;
+  color: #4e342e;
 }
 
 /* =========================================
-   2. ARQUITECTURA DEL INDEX: Definición de la grilla principal y componentes de tarjetas (Cards).
+   2. ENCABEZADO Y NAVEGACIÓN
    ========================================= */
-
 .main-header {
-    background-color: transparent;
-    padding: 4rem 1rem 2rem 1rem;
-    text-align: center;
-    border-bottom: 2px solid #d7ccc8;
-    margin-bottom: 40px;
+  text-align: center;
+  padding: 50px 20px;
 }
 
 .main-header h1 {
-    font-size: 2.5rem;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #5d4037;
+  margin: 0;
+  font-size: 2.5rem;
+  color: #5d4037;
 }
-
-.main-header p {
-    font-style: italic;
-    color: #8d6e63;
-    margin-top: 10px;
-}
-
-.catalog-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* La Tarjeta */
-.book-link {
-    text-decoration: none;
-    color: inherit;
-}
-
-.book-card {
-    background: white;
-    width: 280px;      
-    height: 480px;     
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s ease;
-}
-
-/* =========================================
-   3. MICROINTERACCIONES: Feedback visual para mejorar la experiencia de usuario (UX).
-   ========================================= */
-
-.book-card:hover {
-    transform: translateY(-10px);
-}
-
-.book-cover {
-    width: 100%;
-    height: 320px;     
-    background-color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding-top: 30px; 
-    padding-bottom: 10px;
-    box-sizing: border-box;
-}
-
-.cover-image {
-    max-width: 100%;   
-    max-height: 100%;  
-    width: auto;       
-    height: auto;      
-    object-fit: contain; 
-    display: block;
-}
-
-.book-info {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    height: 180px; 
-}
-
-/* =========================================
-   4. CONTROL DE DESBORDE: Limitación de líneas para mantener la simetría de las tarjetas.
-   ========================================= */
-
-.book-info h2 {
-    font-size: 1.2rem;
-    margin: 0;
-    color: #5d4037;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.book-info h3 {
-    font-size: 1rem;
-    font-style: italic;
-    color: #8d6e63;
-    margin: 10px 0;
-}
-
-.book-info p {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    color: #6d4c41;
-    margin: 0;
-}
-
-/* =========================================
-   5. PLANTILLA DE OBRA: Layout para la visualización profunda de títulos y sinopsis.
-   ========================================= */
 
 .nav-simple {
-    padding: 40px 0; 
-    max-width: 1000px; 
-    margin: 0 auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 0px;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .nav-simple a {
-    text-decoration: none;
-    color: #8d6e63;
-    font-weight: bold;
-    font-size: 1rem;
-    border-bottom: 1px solid #d7ccc8; 
-    padding-bottom: 5px;
-    transition: all 0.3s;
+  text-decoration: none;
+  color: #8d6e63;
+  font-weight: bold;
 }
 
-.nav-simple a:hover {
-    color: #5d4037;
-    border-bottom: 1px solid #5d4037;
+/* =========================================
+   3. CATÁLOGO (INDEX.HTML)
+   ========================================= */
+.catalog-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  padding: 20px;
 }
 
+.book-card {
+  background: white;
+  width: 280px;
+  border-radius: 10px;
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+  cursor: pointer;
+}
+
+.book-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* =========================================
+   4. DETALLE DEL LIBRO (DETAILS.HTML)
+   ========================================= */
 .detail-container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
 }
 
 .detail-content {
-    display: flex;
-    gap: 60px; 
-    background: white;
-    padding: 60px;
-    border-radius: 15px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-    align-items: center;
+  background: white;
+  display: flex;
+  gap: 40px;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  width: 100%;
 }
 
 .detail-image {
-    flex: 0 0 320px; 
-    display: flex;
-    justify-content: center;
+  flex: 0 0 350px;
 }
 
 .detail-image img {
-    width: 100%; 
-    height: auto;
-    border-radius: 4px;
-    box-shadow: 15px 15px 40px rgba(0,0,0,0.1);
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
 }
 
 .detail-text {
-    flex: 1;
-    min-width: 0;
+  flex: 1;
 }
 
 .detail-text h1 {
-    font-size: 2.5rem;
-    color: #5d4037;
-    margin: 0;
+  margin-top: 0;
+  font-size: 2.5rem;
+  color: #5d4037;
 }
 
-.detail-text h2 {
-    font-size: 1.5rem;
-    color: #8d6e63;
-    font-style: italic;
-    font-weight: normal;
-}
-
-.divider {
-    height: 1px;
-    background-color: #d7ccc8;
-    margin: 20px 0;
-}
-
-.synopsis p {
-    line-height: 1.8;
-    font-size: 1.1rem;
-    color: #4e342e;
-    margin-bottom: 15px;
+.synopsis {
+  margin: 20px 0;
+  line-height: 1.6;
+  color: #4e342e;
 }
 
 .book-meta {
-    margin-top: 30px;
-    font-size: 0.9rem;
-    color: #a1887f;
-    border-top: 1px dashed #d7ccc8;
-    padding-top: 20px;
+  margin-top: 30px;
+  border-top: 1px dashed #d7ccc8;
+  padding-top: 20px;
 }
 
 /* =========================================
-   6. FOOTER GENERAL
+   5. PANEL DE ADMINISTRACIÓN (ADMIN.HTML)
    ========================================= */
 
-.main-footer {
+/* Contenedor y títulos */
+.form-container-main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.form-container-main h2 {
     text-align: center;
-    padding: 40px 0;
-    color: #a1887f;
-    font-size: 0.8rem;
+    color: #4e342e;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Tarjeta de formulario */
+.form-card {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid #d2b48c;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+/* Elementos de entrada de datos */
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  height: 45px;
+  box-sizing: border-box;
+  border: 1px solid #d2b48c;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Mini formulario para gestión de autoras */
+.author-mini-form {
+  display: none;
+  background: #fdfaf5;
+  padding: 20px;
+  border: 1px dashed #d2b48c;
+  margin: 20px 0 40px 0;
+}
+
+/* Tabla de gestión de registros */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+/* Botones de acción con iconos SVG */
+.btn-edit, .btn-delete {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0;
+}
+
+.btn-edit {
+  background: #d9c5a3 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg>') no-repeat center;
+  background-size: 20px;
+}
+
+.btn-delete {
+  background: #8b4513 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>') no-repeat center;
+  background-size: 20px;
+}
+
+/* Componentes de control y botones de formulario */
+.author-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.select-main {
+  flex: 1;
+}
+
+.btn-tool {
+  background-color: #eeeeee;
+  color: #4e342e;
+  border: 1px solid #d2b48c;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  white-space: nowrap;
+  transition: background 0.3s;
+  height: 45px;
+  display: flex;
+  align-items: center;
+}
+
+.btn-tool:hover {
+  background-color: #e0e0e0;
+}
+
+.button-group-row {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.btn-save {
+  background-color: #7d5a44;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 6px;
+  border: 1px solid #d2b48c;
+  font-weight: bold;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+#btn-cancel {
+  background-color: #eeeeee;
+  color: #4e342e;
+  padding: 12px 25px;
+  border-radius: 6px;
+  border: 1px solid #d2b48c;
+  font-weight: bold;
+  cursor: pointer;
+  min-width: 150px;
+  display: none;
+}
+
+.btn-author-save {
+  background-color: #8d6e63;
+  color: white;
+  padding: 10px 20px;
+  border: 1px solid #d2b48c;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
+  margin-top: 15px;
+  display: block;
 }
 
 /* =========================================
-   7. ADAPTABILIDAD (RWD): Breakpoints para optimización en Tablets y dispositivos móviles.
+   6. PIE DE PÁGINA (FOOTER)
    ========================================= */
-
-/* Tablets (Entre 769px y 1024px) */
-@media (max-width: 1024px) {
-    .catalog-container {
-        gap: 20px;
-        padding: 30px;
-    }
-    
-    .book-card {
-        width: 250px; 
-        height: 480px;
-    }
+.main-footer {
+  text-align: center;
+  padding: 30px 20px;
+  border-top: 1px solid #eaddcf;
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }
 
-/* Celulares (Menos de 768px) */
+.main-footer p {
+  margin: 0;
+  color: #8d6e63;
+  font-size: 0.9rem;
+}
+
+.nav-admin {
+  text-decoration: none;
+  color: #8d6e63;
+  border: 1px solid #d2b48c;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.nav-admin:hover {
+  background-color: #d2b48c;
+  color: white;
+}
+
+/* =========================================
+   7. DISEÑO RESPONSIVO
+   ========================================= */
 @media (max-width: 768px) {
-    /* Ajustes Header */
-    .main-header {
-        padding: 2.5rem 1rem 1.5rem 1rem;
-    }
+  /* Ajuste de sección de detalle en móviles */
+  .detail-content {
+    flex-direction: column;
+    padding: 20px;
+  }
+  
+  .detail-image {
+    flex: 0 0 auto;
+    width: 100%;
+  }
 
-    .main-header h1 {
-        font-size: 1.5rem;      
-        line-height: 1.2;
-        letter-spacing: 1px;
-        white-space: normal;    
-    }
+  /* Ajuste de cuadrículas de formulario */
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
 
-    .main-header p {
-        font-size: 0.85rem;
-    }
+  /* Ajuste de footer y controles */
+  .main-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
 
-    /* Ajustes Catálogo Móvil */
-    .catalog-container {
-        flex-direction: column; 
-        align-items: center;    
-        gap: 25px;
-        padding: 10px;
-    }
+  .author-controls-row {
+    flex-wrap: wrap;
+  }
+  
+  .btn-tool {
+    flex: 1;
+    justify-content: center;
+  }
 
-    .book-card {
-        width: 280px;           
-        height: auto;           
-        min-height: 500px;
-    }
+  .button-group-row {
+    flex-direction: column;
+  }
 
-    .book-cover {
-        height: 260px;          
-    }
+  /* Transformación de tabla a tarjetas */
+  table, thead, tbody, th, td, tr {
+    display: block; 
+  }
 
-    /* Ajustes Página Detalles Móvil */
-    .nav-simple {
-        padding: 20px 0 10px 0; 
-        text-align: center;      
-        max-width: 100%;
-    }
+  /* Ocultar encabezados de tabla originales */
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
 
-    .detail-content {
-        flex-direction: column;  
-        align-items: center;     
-        padding: 30px 20px;      
-        gap: 30px;               
-        text-align: center;      
-    }
+  /* Estilo de cada fila como tarjeta */
+  tr {
+    background: #fdfaf5;
+    border: 1px solid #d2b48c;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 15px;
+  }
 
-    .detail-image img {
-        width: 100%;
-        max-width: 260px;        
-    }
+  /* Alineación de datos dentro de la tarjeta */
+  td {
+    border: none;
+    padding: 8px 0;
+    text-align: left;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-    .detail-text h1 {
-        font-size: 1.8rem;       
-    }
+  /* Ajuste para que la imagen y botones se vean bien */
+  td img {
+    width: 60px;
+    height: auto;
+  }
 
-    .detail-text h2 {
-        font-size: 1.2rem;
-    }
-
-    .synopsis p {
-        font-size: 1.1em; 
-        color: #4e342e;
-        margin-bottom: 15px;
-    }
+  /* Contenedor de botones en móvil */
+  td:last-child {
+    justify-content: center;
+    gap: 20px;
+    border-top: 1px dashed #d2b48c;
+    margin-top: 10px;
+    padding-top: 15px;
+  }
 }
