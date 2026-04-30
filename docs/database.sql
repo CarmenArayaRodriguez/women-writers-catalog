@@ -5,7 +5,7 @@
 -- Dumped from database version 16.3
 -- Dumped by pg_dump version 16.3
 
--- Started on 2026-04-15 06:45:43 -04
+-- Started on 2026-04-29 07:14:18 -04
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,22 +19,11 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 4 (class 2615 OID 2200)
--- Name: public; Type: SCHEMA; Schema: -; Owner: pg_database_owner
+-- TOC entry 5 (class 2615 OID 224278)
+-- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
 
 CREATE SCHEMA public;
-
-
-ALTER SCHEMA public OWNER TO pg_database_owner;
-
---
--- TOC entry 3603 (class 0 OID 0)
--- Dependencies: 4
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pg_database_owner
---
-
-COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 SET default_tablespace = '';
@@ -42,23 +31,53 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 215 (class 1259 OID 224185)
--- Name: authors; Type: TABLE; Schema: public; Owner: postgres
+-- TOC entry 218 (class 1259 OID 224400)
+-- Name: User; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."User" (
+    id text NOT NULL,
+    email text NOT NULL,
+    password text NOT NULL,
+    role text DEFAULT 'admin'::text NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+--
+-- TOC entry 215 (class 1259 OID 224279)
+-- Name: _prisma_migrations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public._prisma_migrations (
+    id character varying(36) NOT NULL,
+    checksum character varying(64) NOT NULL,
+    finished_at timestamp with time zone,
+    migration_name character varying(255) NOT NULL,
+    logs text,
+    rolled_back_at timestamp with time zone,
+    started_at timestamp with time zone DEFAULT now() NOT NULL,
+    applied_steps_count integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- TOC entry 216 (class 1259 OID 224290)
+-- Name: authors; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.authors (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
-    name character varying(255) NOT NULL,
+    first_name character varying(100) NOT NULL,
+    last_name character varying(100) NOT NULL,
     country character varying(100),
     bio text
 );
 
 
-ALTER TABLE public.authors OWNER TO postgres;
-
 --
--- TOC entry 216 (class 1259 OID 224193)
--- Name: books; Type: TABLE; Schema: public; Owner: postgres
+-- TOC entry 217 (class 1259 OID 224298)
+-- Name: books; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE public.books (
@@ -74,48 +93,95 @@ CREATE TABLE public.books (
 );
 
 
-ALTER TABLE public.books OWNER TO postgres;
-
 --
--- TOC entry 3596 (class 0 OID 224185)
--- Dependencies: 215
--- Data for Name: authors; Type: TABLE DATA; Schema: public; Owner: postgres
+-- TOC entry 3616 (class 0 OID 224400)
+-- Dependencies: 218
+-- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.authors (id, name, country, bio) FROM stdin;
-9c0e6697-00f4-43ed-a65b-fff354b2858c	Isabel Allende	Chile	Escritora chilena, referente del realismo mágico y una de las autoras más leídas del mundo.
-612e2feb-8ca0-4843-b411-d6fb21f41f27	Mariana Enriquez	Argentina	Periodista y escritora, conocida por sus relatos de terror vinculados a la realidad social.
-a3cd0506-f6dd-4421-a20b-6c70b0e7cbd9	Nona Fernández	Chile	Escritora y guionista chilena que explora la memoria y el pasado reciente de su país.
-d6ed3a21-05bc-4313-837a-e390edd83b4c	Ángeles Mastretta	México	Escritora conocida por sus relatos sobre mujeres que desafían las convenciones sociales.
-e62a0690-9d96-460c-ba24-c9e9ed8bedff	Arelis Uribe	Chile	Escritora y periodista destacada por su narrativa cruda y feminista.
-5011e84e-6ab5-4407-a12e-e591cab01b31	Marcela Serrano	Chile 	Escritora chilena, referente de la literatura contemporánea en Latinoamérica. Su obra destaca por explorar la identidad femenina y el compromiso político. Autora de éxitos internacionales como 'Nosotras que nos queremos tanto' y 'Antigua vida mía', ha sido galardonada con el Premio Sor Juana Inés de la Cruz.
-4c717540-e191-4205-b0c0-626660150821	Fernanda Melchor	México	Escritora y periodista mexicana, reconocida mundialmente por su novela Temporada de huracanes. Su obra destaca por explorar la violencia y el realismo con una fuerza narrativa impresionante.
-3f8bfcf7-df56-4618-97a4-4ed616cdc47b	Laura Esquivel	México	Escritora y política mexicana, famosa por combinar gastronomía y literatura.
+COPY public."User" (id, email, password, role, "createdAt") FROM stdin;
+96207dda-6618-4487-a7bc-b90fdaf874d1	admin@admin.com	$2b$10$QnD1bAKdI2IKXpcykg3XgODoXDYO2UsX46skAOiCqyUO.Vo0/Sir2	admin	2026-04-28 22:58:53.588
 \.
 
 
 --
--- TOC entry 3597 (class 0 OID 224193)
+-- TOC entry 3613 (class 0 OID 224279)
+-- Dependencies: 215
+-- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count) FROM stdin;
+6ef61224-dc2b-485f-be00-107ca2f1a79d	8f4cc3f16578bad13ecb78cf727d65c2a5031628955a506df9fed1695e6038ff	2026-04-28 18:43:04.478698-04	20260428224304_init_structured_schema	\N	\N	2026-04-28 18:43:04.347511-04	1
+e4884fa6-6f55-4885-9526-b70734926911	3d96e73fb4e2ef2ac3cff8174f7715a2db4bff8d11d1ebf1453c2d2ab551fe98	2026-04-28 18:56:32.0603-04	20260428225632_add_user_table_uuid	\N	\N	2026-04-28 18:56:32.053867-04	1
+\.
+
+
+--
+-- TOC entry 3614 (class 0 OID 224290)
 -- Dependencies: 216
--- Data for Name: books; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: authors; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.authors (id, first_name, last_name, country, bio) FROM stdin;
+0340b4d1-2300-46db-b29f-9d54956b1275	Marcela	Serrano	Chile	Destacada novelista chilena conocida por su enfoque en la psicología femenina.
+a5765571-0b91-4d2d-80bb-af45e0becd88	Ángeles	Mastretta	México	Escritora mexicana famosa por crear personajes femeninos sugerentes.
+674196ac-e2bf-4f18-97a0-78415fc64a10	Nona	Fernández	Chile	Escritora y actriz chilena, centrada en reconstruir la memoria histórica.
+686875e6-7a61-4277-a102-94143ae2115f	Laura	Esquivel	México	Pionera en combinar gastronomía con realismo mágico literario.
+cb029d92-44dc-423b-a098-d8b01500b8ed	Gabriela	Mistral	Chile	La primera mujer latinoamericana en ganar el Premio Nobel de Literatura.
+dde5ce04-402b-4aae-a2e1-a8025f83786f	Isabel	Allende	Chile	Autora de gran éxito mundial, referente de la narrativa hispana.
+f0c7daf3-7cab-4ace-8af5-6bb343cae0e7	Arelis	Uribe	Chile	Periodista y escritora chilena destacada por su narrativa directa y social.
+787d2c10-3f48-429b-8a96-d7239562224b	Mariana	Enríquez	Argentina	Maestra del terror contemporáneo y urbano latinoamericano.
+e14e4a23-b103-4e0a-94d9-4d6b9652033d	Fernanda	Melchor	México	Escritora mexicana reconocida por su estilo visceral y crudo.
+1e2566b8-0bb3-47bb-ac32-4e630a5bc0d6	Alejandra	Pizarnik	Argentina	Una de las voces poéticas más intensas y profundas de la literatura latinoamericana del siglo XX.
+b9da7d15-528c-4e6e-834d-1ebbed6c9f3b	Lina	Meruane	Chile	Reconocida escritora chilena contemporánea, ganadora del premio Sor Juana Inés de la Cruz.
+\.
+
+
+--
+-- TOC entry 3615 (class 0 OID 224298)
+-- Dependencies: 217
+-- Data for Name: books; Type: TABLE DATA; Schema: public; Owner: -
 --
 
 COPY public.books (id, title, short_description, synopsis, cover_image_url, publisher, year, genre, author_id) FROM stdin;
-94623836-8738-40b8-9500-65b1a27f2a06	Nuestra parte de noche	Un viaje oscuro que mezcla terror sobrenatural con historia política.	Un padre y un hijo atraviesan Argentina por carretera en los años de la dictadura, cargando con el legado de una sociedad secreta.	nuestra-parte-de-noche.jpeg	Anagrama	2019	Terror / Novela	612e2feb-8ca0-4843-b411-d6fb21f41f27
-92f1f2c8-fee1-4e33-9c35-e6d06adb2d3a	Como agua para chocolate	Una historia de amor prohibido que se cocina con sentimientos mágicos.	Tita de la Garza utiliza la cocina para expresar sus sentimientos en un mundo donde las tradiciones le impiden estar con su amor.	como-agua-para-chocolate.jpg	Planeta	1989	Realismo Mágico	3f8bfcf7-df56-4618-97a4-4ed616cdc47b
-17db0c33-cff4-4ba3-9f17-02a0fd8e1872	Chilean Electric	Crónica sobre la memoria familiar y la llegada de la luz a Santiago.	Una reflexión sobre la luz, la oscuridad de la historia y los recuerdos familiares que se iluminan por primera vez.	chilean-electric.jpg	Alquimia	2015	Crónica / Ensayo	a3cd0506-f6dd-4421-a20b-6c70b0e7cbd9
-e56137a7-e125-456c-8560-e3051947feaa	Arráncame la vida	El despertar de una mujer frente al poder en el México de los años 30.	Catalina Guzmán narra su ascenso y liberación personal en un matrimonio con un poderoso general en el México posrevolucionario.	arrancame-la-vida.jpg	Seix Barral	1985	Novela Histórica	d6ed3a21-05bc-4313-837a-e390edd83b4c
-4fe772a5-24a1-41e2-9c81-6de04b2f533e	Quiltras	Relatos sobre la vida en la periferia, la identidad y el despertar sexual.	A través de un lenguaje directo, rebelde y profundamente honesto, Arelis Uribe nos sumerge en el universo de mujeres que habitan la periferia de Santiago. Quiltras no es solo una colección de relatos; es una radiografía sobre la identidad de clase, la sororidad y la resistencia femenina en los márgenes de la ciudad. Con historias que transitan entre la infancia, el despertar sexual y la crudeza de la vida cotidiana, este libro explora qué significa ser mujer y 'quiltra' en un Chile lleno de contrastes, logrando una obra tan política como íntima que se queda grabada en la piel.	quiltras.jpg	Los Libros de la Mujer Rota	2016	Cuentos	e62a0690-9d96-460c-ba24-c9e9ed8bedff
-4d8f32cb-4566-4122-a1b5-60808930d991	Hija de la fortuna	Una ambiciosa saga histórica sobre una joven chilena que viaja a California durante la fiebre del oro en busca de su amor.	Eliza Sommers es una joven chilena que vive en Valparaíso en 1849, el año en que se descubre oro en California. Su amante, Joaquín Andieta, parte hacia el norte decidido a hacer fortuna, y ella decide seguirlo. El viaje de Eliza es una aventura hacia la libertad y el autoconocimiento, donde aprenderá que el amor es una fuerza poderosa pero que la independencia lo es aún más. Una historia llena de personajes inolvidables y una recreación magistral de una época de cambios.	hija-de-la-fortuna.jpg	Plaza & Janés	1999	Novela histórica	9c0e6697-00f4-43ed-a65b-fff354b2858c
-4495f297-0272-47cc-b377-ae615e1e06dd	Liceo de Niñas	Una reflexión sobre la memoria, la adolescencia y los fantasmas de la dictadura chilena a través de un reencuentro escolar.	Un grupo de exalumnas de un liceo emblemático se reúne años después de haber participado en las protestas estudiantiles de los años 80. Entre túneles subterráneos y recuerdos que no terminan de encajar, Nona Fernández construye una historia donde el pasado y el presente se confunden. Es una obra que explora cómo la historia de un país se queda grabada en los cuerpos de quienes la vivieron cuando apenas eran niñas.	liceo-de-ninas.jpg	Alquimia Ediciones	2015	Dramaturgia / Novela	a3cd0506-f6dd-4421-a20b-6c70b0e7cbd9
-d874a87b-ad57-4096-9d38-3b55f61dd392	Las heridas	Una exploración cruda y valiente sobre las cicatrices del cuerpo, la política y la memoria.	En este libro, Arelis Uribe profundiza en las marcas que deja la vida, el activismo y el amor. Con una prosa directa y sin adornos, nos lleva por un Chile que duele, pero que también se reconoce en sus propias heridas.	las-heridas.webp	Emecé Editores	2023	Ficción contemporánea	e62a0690-9d96-460c-ba24-c9e9ed8bedff
-c442a1f2-44d9-4f2a-b567-dedb5ecda4d9	Temporada de huracanes	Un retrato brutal sobre el abandono y la violencia en un México profundo.	La historia comienza con el hallazgo de un cadáver flotando en las aguas de un canal de riego: es el cuerpo de la Bruja, un personaje respetado y temido en el pueblo de La Matosa. A partir de este evento, la novela se despliega en una serie de relatos que se entrelazan para revelar las miserias, los deseos y las violencias de un grupo de personajes marcados por la fatalidad. Con una prosa torrencial y un ritmo que no da tregua, Melchor nos sumerge en una atmósfera asfixiante donde el chisme, la superstición y la brutalidad humana son los verdaderos protagonistas.	temporada-de-huracanes.webp	Literatura Random House	2017	Novela negra	4c717540-e191-4205-b0c0-626660150821
+4c0d1cf8-2cda-4598-aa36-ce4421ee0f4d	Antigua vida mía	Una historia de amistad y reencuentro.	Josefa Ferrer, una famosa cantautora, y Violeta Dasinski, una arquitecta, entrelazan sus vidas en un relato de sororidad, violencia de género y búsqueda de libertad en Guatemala y Chile.	antigua-vida-mia.jpg	Alfaguara	1995	Novela	0340b4d1-2300-46db-b29f-9d54956b1275
+ebaff110-4069-44d1-a9e9-b88ac9fa7220	Arráncame la vida	Relato sobre el poder y la libertad femenina.	Catalina Ascencio se casa joven con el general Andrés Ascencio en el México posrevolucionario, descubriendo que su mundo de privilegios es una cárcel de oro que debe romper.	arrancame-la-vida.jpg	Seix Barral	1985	Novela	a5765571-0b91-4d2d-80bb-af45e0becd88
+1b58352f-0416-4326-b5dd-6e40b98c5067	Chilean Electric	Crónica sobre la memoria y la luz.	A partir de la anécdota de su abuela presenciando la llegada de la luz eléctrica a la Plaza de Armas, la autora ilumina rincones oscuros de la historia de Chile y la memoria familiar.	chilean-electric.jpg	Alquimia	2015	Ensayo	674196ac-e2bf-4f18-97a0-78415fc64a10
+2fec6d43-5662-48cb-8bc4-3e05bbcffaef	Liceo de Niñas	Reflexión sobre la identidad escolar y social.	Una obra que transita entre dramaturgia y narrativa, donde ex alumnas de un liceo público chileno se enfrentan a sus fantasmas escolares y a promesas incumplidas.	liceo-de-ninas.jpg	Alquimia	2015	Novela	674196ac-e2bf-4f18-97a0-78415fc64a10
+ecaa919e-9536-4ce3-9bd4-2d8ca28bf0d9	Como agua para chocolate	Recetas y amores imposibles.	Tita De la Garza, condenada a no casarse para cuidar a su madre, expresa sus emociones prohibidas a través de platillos mágicos que afectan a quienes los prueban.	como-agua-para-chocolate.jpg	Anchor	1989	Realismo Mágico	686875e6-7a61-4277-a102-94143ae2115f
+b6f41845-1555-4839-906a-04130a182305	Desolación	Poesía desgarradora y profunda.	Poemario fundamental publicado en 192 publico aborda el dolor del amor perdido, maternidad frustrada, fe y conexión mística con la naturaleza.	desolacion.webp	Instituto de las Españas	1922	Poesía	cb029d92-44dc-423b-a098-d8b01500b8ed
+515ea951-ff1b-4c50-9075-ffec93a60124	Hija de la fortuna	Aventura en la fiebre del oro.	Eliza Sommers, joven chilena criada por británicos en Valparaíso, viaja como polizón a California en busca de su amante durante la fiebre del oro de 1849.	hija-de-la-fortuna.jpg	Vintage	1999	Novela Histórica	dde5ce04-402b-4aae-a2e1-a8025f83786f
+3a084ebd-780f-4bd0-9195-d65943ed92b1	La casa de los espíritus	Saga familiar de los Trueba.	Narra la vida de la familia Trueba a lo largo de cuatro generaciones, mezclando pasiones, política y lo sobrenatural en un Chile en transformación.	la-casa-de-los-espiritus.jpeg	Plaza & Janés	1982	Realismo Mágico	dde5ce04-402b-4aae-a2e1-a8025f83786f
+261d6c55-8b37-4a49-9171-4cbd3ed9be26	Las heridas	Relatos sobre la educación y clase.	Crónicas que exploran las cicatrices del sistema educativo chileno, precariedad económica y descubrimiento de la identidad en un entorno desigual.	las-heridas.webp	Emecé	2017	Cuentos	f0c7daf3-7cab-4ace-8af5-6bb343cae0e7
+813d23bd-67b4-43fa-a7dc-641703327a41	Quiltras	Historias de mujeres en los márgenes.	Cuentos protagonizados por mujeres jóvenes de barrios populares que retratan amistad, despertar sexual y barreras sociales con lenguaje crudo.	quiltras.jpg	Los Libros de la Mujer Rota	2016	Cuentos	f0c7daf3-7cab-4ace-8af5-6bb343cae0e7
+3a00e12a-fe50-4f12-a523-3b0c12356406	Nuestra parte de noche	Sagas familiares y ritos oscuros.	Un padre y un hijo atraviesan Argentina por carretera. Pertenecen a una Orden que rinde culto a la Oscuridad, mezclando terror sobrenatural con historia de dictadura.	nuestra-parte-de-noche.jpeg	Anagrama	2019	Terror	787d2c10-3f48-429b-8a96-d7239562224b
+5795c8c0-07f5-48b4-b92d-3e9322462727	Temporada de huracanes	Investigación de un asesinato en un pueblo.	En el pueblo de La Matosa, aparece el cadáver de la Bruja. Testimonios reconstruyen una historia de miseria, violencia y superstición visceral.	temporada-de-huracanes.webp	Random House	2017	Novela	e14e4a23-b103-4e0a-94d9-4d6b9652033d
+59e715c1-d4fc-4c54-a08a-ce32b3954e4e	La condesa sangrienta	Relato sobre la aristócrata Erzsébet Báthory.	Un retrato poético y perturbador sobre la figura de la condesa Bathory, donde Pizarnik explora la belleza del horror, la perversión y la obsesión con un lenguaje magistral.	la-condesa-sangrienta.jpg	Libros del Zorro Rojo	1971	Ensayo/Relato	1e2566b8-0bb3-47bb-ac32-4e630a5bc0d6
+2e61c454-b670-4b4c-a902-2886daf6342c	Sangre en el ojo	Novela sobre la pérdida de la visión.	Tras sufrir una hemorragia ocular, una mujer debe reconfigurar su mundo, identidad y relaciones personales desde la repentina oscuridad, en un relato visceral.	sangre-en-el-ojo.jpeg	Eterna Cadencia	2012	Novela	b9da7d15-528c-4e6e-834d-1ebbed6c9f3b
 \.
 
 
 --
--- TOC entry 3449 (class 2606 OID 224192)
--- Name: authors authors_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3468 (class 2606 OID 224408)
+-- Name: User User_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."User"
+    ADD CONSTRAINT "User_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3461 (class 2606 OID 224287)
+-- Name: _prisma_migrations _prisma_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public._prisma_migrations
+    ADD CONSTRAINT _prisma_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3463 (class 2606 OID 224297)
+-- Name: authors authors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.authors
@@ -123,8 +189,8 @@ ALTER TABLE ONLY public.authors
 
 
 --
--- TOC entry 3451 (class 2606 OID 224200)
--- Name: books books_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3465 (class 2606 OID 224305)
+-- Name: books books_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.books
@@ -132,15 +198,32 @@ ALTER TABLE ONLY public.books
 
 
 --
--- TOC entry 3452 (class 2606 OID 224201)
--- Name: books books_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- TOC entry 3466 (class 1259 OID 224409)
+-- Name: User_email_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "User_email_key" ON public."User" USING btree (email);
+
+
+--
+-- TOC entry 3469 (class 2606 OID 224306)
+-- Name: books books_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.books
     ADD CONSTRAINT books_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.authors(id) ON DELETE CASCADE;
 
 
--- Completed on 2026-04-15 06:45:44 -04
+--
+-- TOC entry 3622 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
+--
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+
+
+-- Completed on 2026-04-29 07:14:19 -04
 
 --
 -- PostgreSQL database dump complete

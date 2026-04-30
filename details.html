@@ -4,30 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4d6/512.png" type="image/png">
-    <title>Detalle de la Obra</title>
+    <title>Detalle de la Obra - Catálogo de Escritoras</title>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="nav-simple">
-        <a href="index.html">← Volver al catálogo</a>
+    <nav class="nav-simple" role="navigation">
+        <a href="index.html" aria-label="Volver al catálogo principal de libros">← Volver al catálogo</a>
     </nav>
     
     <main class="detail-container">
-        <article class="detail-content">
+        <article class="detail-content" role="article">
             <div class="detail-image">
-                <img id="book-cover" src="" alt="Portada del libro">
+                <img id="book-cover" src="" alt="Portada del libro" aria-hidden="false">
             </div>
             
-            <section class="detail-text">
+            <section class="detail-text" aria-labelledby="book-title">
                 <h1 id="book-title">Cargando datos...</h1>
-                <h2 id="book-author"></h2>
+                <h2 id="book-author" aria-label="Autora de la obra"></h2>
                 
-                <div class="divider"></div>
+                <div class="divider" role="presentation"></div>
                 
-                <div class="synopsis" id="book-synopsis">
-                    </div>
+                <div class="synopsis" id="book-synopsis" role="region" aria-label="Sinopsis del libro" aria-live="polite">
+                </div>
 
-                <div class="book-meta">
+                <div class="book-meta" role="group" aria-label="Información técnica del libro">
                     <p><strong>Editorial:</strong> <span id="book-publisher"></span></p>
                     <p><strong>Año:</strong> <span id="book-year"></span></p>
                     <p><strong>Género:</strong> <span id="book-genre"></span></p>
@@ -37,7 +38,7 @@
         </article>
     </main>
     
-    <footer class="main-footer">
+    <footer class="main-footer" role="contentinfo">
         <p>&copy; 2026 - Programación Web | Catálogo de Escritoras Latinoamericanas</p>
     </footer>
 

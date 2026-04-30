@@ -120,10 +120,63 @@ body {
 }
 
 /* =========================================
-   5. PANEL DE ADMINISTRACIÓN (ADMIN.HTML)
+   5. ACCESO (LOGIN.HTML)
+   ========================================= */
+.login-container {
+  max-width: 500px;
+  margin: 80px auto;
+  padding: 20px;
+}
+
+.login-card {
+  background: white;
+  padding: 50px;
+  border-radius: 12px;
+  border: 1px solid #d2b48c;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.login-card h2 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 30px;
+  color: #5d4037;
+}
+
+.login-card .btn-save {
+  display: block;
+  margin: 0 auto;
+}
+
+.btn-login {
+  background-color: #7d5a44;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  display: block;
+  margin: 20px auto 0;
+  min-width: 150px;
+}
+
+.btn-login:hover {
+  background-color: #5d4037;
+}
+
+#message {
+  color: #8b4513;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+/* =========================================
+   6. PANEL DE ADMINISTRACIÓN (ADMIN.HTML)
    ========================================= */
 
-/* Contenedor y títulos */
 .form-container-main {
   max-width: 800px;
   margin: 0 auto;
@@ -138,7 +191,6 @@ body {
     width: 100%;
 }
 
-/* Tarjeta de formulario */
 .form-card {
   background: white;
   padding: 30px;
@@ -157,7 +209,6 @@ body {
   margin-bottom: 8px;
 }
 
-/* Elementos de entrada de datos */
 input, select, textarea {
   width: 100%;
   padding: 10px;
@@ -174,7 +225,6 @@ input, select, textarea {
   gap: 20px;
 }
 
-/* Mini formulario para gestión de autoras */
 .author-mini-form {
   display: none;
   background: #fdfaf5;
@@ -183,7 +233,6 @@ input, select, textarea {
   margin: 20px 0 40px 0;
 }
 
-/* Tabla de gestión de registros */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -195,7 +244,6 @@ th, td {
   border-bottom: 1px solid #eee;
 }
 
-/* Botones de acción con iconos SVG */
 .btn-edit, .btn-delete {
   width: 40px;
   height: 40px;
@@ -215,7 +263,6 @@ th, td {
   background-size: 20px;
 }
 
-/* Componentes de control y botones de formulario */
 .author-controls-row {
   display: flex;
   align-items: center;
@@ -240,10 +287,6 @@ th, td {
   height: 45px;
   display: flex;
   align-items: center;
-}
-
-.btn-tool:hover {
-  background-color: #e0e0e0;
 }
 
 .button-group-row {
@@ -272,7 +315,6 @@ th, td {
   font-weight: bold;
   cursor: pointer;
   min-width: 150px;
-  display: none;
 }
 
 .btn-author-save {
@@ -283,14 +325,12 @@ th, td {
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 0.3s ease;
   margin-top: 15px;
   display: block;
 }
 
 /* =========================================
-   6. PIE DE PÁGINA (FOOTER)
+   7. PIE DE PÁGINA (FOOTER)
    ========================================= */
 .main-footer {
   text-align: center;
@@ -318,97 +358,44 @@ th, td {
   font-size: 0.8rem;
   font-weight: bold;
   transition: all 0.3s ease;
-  white-space: nowrap;
-}
-
-.nav-admin:hover {
-  background-color: #d2b48c;
-  color: white;
 }
 
 /* =========================================
-   7. DISEÑO RESPONSIVO
+   8. DISEÑO RESPONSIVO
    ========================================= */
 @media (max-width: 768px) {
-  /* Ajuste de sección de detalle en móviles */
+  .login-container-main {
+    width: 95%;        
+    max-width: 450px;  
+    margin: 40px auto;
+  }
+  
   .detail-content {
     flex-direction: column;
     padding: 20px;
   }
   
-  .detail-image {
-    flex: 0 0 auto;
-    width: 100%;
-  }
-
-  /* Ajuste de cuadrículas de formulario */
   .form-grid {
     grid-template-columns: 1fr;
   }
 
-  /* Ajuste de footer y controles */
   .main-footer {
     flex-direction: column;
     gap: 10px;
-  }
-
-  .author-controls-row {
-    flex-wrap: wrap;
-  }
-  
-  .btn-tool {
-    flex: 1;
-    justify-content: center;
   }
 
   .button-group-row {
     flex-direction: column;
   }
 
-  /* Transformación de tabla a tarjetas */
+  /* Vista de tabla en móvil */
   table, thead, tbody, th, td, tr {
     display: block; 
   }
-
-  /* Ocultar encabezados de tabla originales */
-  thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-
-  /* Estilo de cada fila como tarjeta */
+  
   tr {
-    background: #fdfaf5;
     border: 1px solid #d2b48c;
-    border-radius: 8px;
     margin-bottom: 20px;
     padding: 15px;
-  }
-
-  /* Alineación de datos dentro de la tarjeta */
-  td {
-    border: none;
-    padding: 8px 0;
-    text-align: left;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  /* Ajuste para que la imagen y botones se vean bien */
-  td img {
-    width: 60px;
-    height: auto;
-  }
-
-  /* Contenedor de botones en móvil */
-  td:last-child {
-    justify-content: center;
-    gap: 20px;
-    border-top: 1px dashed #d2b48c;
-    margin-top: 10px;
-    padding-top: 15px;
   }
 }

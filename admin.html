@@ -1,66 +1,85 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <script>
+        if (!localStorage.getItem('token')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4d6/512.png" type="image/png">
     <title>Panel de Administración - Catálogo de Escritoras Latinoamericanas</title>
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="nav-simple">
-        <a href="index.html">← Volver al catálogo público</a>
+    <nav class="nav-simple" role="navigation">
+        <a href="index.html" aria-label="Volver a la página principal del catálogo">← Volver al catálogo público</a>
     </nav>
 
     <main class="form-container-main">
         
-        <div class="form-card">
-            <h1 id="form-title">Añadir Nueva Obra</h1>
-            <p class="form-subtitle">Gestiona los libros de la colección desde aquí.</p>
+        <div class="form-card" role="region" aria-labelledby="form-title">
+            <h1 id="form-title">Gestión de Obras</h1>
+            <p class="form-subtitle">Administración de la colección digital.</p>
             
-            <form id="book-form" enctype="multipart/form-data">
+            <form id="book-form" enctype="multipart/form-data" aria-describedby="form-title">
                 <input type="hidden" id="book-id">
 
                 <div class="form-group">
                     <label for="title">Título de la obra</label>
-                    <input type="text" id="title" placeholder="Ej: La casa de los espíritus" required>
+                    <input type="text" id="title" placeholder="Ej: La casa de los espíritus" required aria-required="true">
                 </div>
 
                 <div class="form-group">
                     <label for="author_select">Seleccionar Autora</label>
                     <div class="author-controls-row">
-                        <select id="author_select" class="select-main" required>
+                        <select id="author_select" class="select-main" required aria-required="true">
                             <option value="">Cargando autoras...</option>
                         </select>
-                        <button type="button" onclick="toggleNewAuthorForm()" class="btn-tool">+ Nueva</button>
-                        <button type="button" onclick="loadAuthorDataForEdit()" class="btn-tool">Editar</button>
+                        <button type="button" onclick="toggleNewAuthorForm()" class="btn-tool" aria-label="Registrar nueva autora">+ Nueva</button>
+                        <button type="button" onclick="loadAuthorDataForEdit()" class="btn-tool" aria-label="Editar autora seleccionada">Editar</button>
                     </div>
                 </div>
 
-                <div id="new-author-section" class="author-mini-form">
-                    <h3>Registrar/Editar Autora</h3>
+                <div id="new-author-section" class="author-mini-form" role="group" aria-labelledby="author-section-title" style="display: none;">
+                    <h3 id="author-section-title">Datos de la Autora</h3>
                     <input type="hidden" id="edit-author-id">
-                    <div class="form-group">
-                        <input type="text" id="new-author-name" placeholder="Nombre completo">
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="new-author-first-name">Nombre</label>
+                            <input type="text" id="new-author-first-name" placeholder="Nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-author-last-name">Apellido</label>
+                            <input type="text" id="new-author-last-name" placeholder="Apellido">
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <input type="text" id="new-author-country" placeholder="País de origen">
+                        <label for="new-author-country">País de origen</label>
+                        <input type="text" id="new-author-country" placeholder="Ej: Chile">
                     </div>
+
                     <div class="form-group">
                         <label for="new-author-bio">Biografía</label>
-                        <textarea id="new-author-bio" placeholder="Escribe una breve biografía..."></textarea>
+                        <textarea id="new-author-bio" placeholder="Breve reseña biográfica..."></textarea>
                     </div>    
-                    <button type="button" onclick="saveAuthor()" class="btn-author-save">Guardar Autora</button>
+                    
+                    <button type="button" onclick="saveAuthor()" class="btn-author-save">Guardar Datos de Autora</button>
                 </div>
 
                 <div class="form-group">
                     <label for="short_description">Reseña Corta</label>
-                    <input type="text" id="short_description" placeholder="Ej: Relatos sobre la vida..." required>
+                    <input type="text" id="short_description" placeholder="Resumen breve para la tarjeta..." required aria-required="true">
                 </div>
 
                 <div class="form-group">
                     <label for="synopsis">Sinopsis</label>
-                    <textarea id="synopsis" rows="4" placeholder="Breve resumen del libro..."></textarea>
+                    <textarea id="synopsis" rows="4" placeholder="Resumen detallado de la obra..."></textarea>
                 </div>
 
                 <div class="form-grid">
@@ -69,8 +88,8 @@
                         <input type="text" id="publisher" placeholder="Editorial">
                     </div>
                     <div class="form-group">
-                        <label for="year">Año</label>
-                        <input type="number" id="year" placeholder="Año de publicación">
+                        <label for="year">Año de publicación</label>
+                        <input type="number" id="year" placeholder="Ej: 1982">
                     </div>
                 </div>
 
@@ -81,41 +100,42 @@
                     </div>
                     <div class="form-group">
                         <label for="cover_file">Imagen de Portada</label>
-                        <input type="file" id="cover_file" accept="image/*">
+                        <input type="file" id="cover_file" accept="image/*" aria-label="Subir imagen de portada">
                     </div>
                 </div>
 
                 <div class="button-group-row">
                     <button type="submit" class="btn-save" id="btn-submit">Guardar Libro</button>
-                    <button type="button" id="btn-cancel" onclick="resetBookForm()">
+                    <button type="button" id="btn-cancel" onclick="resetBookForm()" style="display: none;" aria-label="Cancelar edición">
                         Cancelar Edición
                     </button>
                 </div>
             </form>
         </div>
 
-        <div class="form-card">
-            <h2>Libros Registrados</h2>
+        <div class="form-card" role="region" aria-label="Listado de libros registrados">
+            <h2>Libros en la Colección</h2>
             <div class="table-container">
-                <table>
+                <table aria-label="Tabla de gestión de libros">
                     <thead>
                         <tr>
-                            <th>Portada</th>
-                            <th>Título</th>
-                            <th>Autora</th>
-                            <th>Acciones</th>
+                            <th scope="col">Portada</th>
+                            <th scope="col">Título</th>
+                            <th scope="col">Autora</th>
+                            <th scope="col">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="admin-table-body">
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
         </div>
 
     </main>
 
-     <footer class="main-footer">
+    <footer class="main-footer" role="contentinfo">
         <p>&copy; 2026 - Programación Web | Catálogo de Escritoras Latinoamericanas</p>
+        <a href="#" id="linkLogout" class="nav-admin" aria-label="Cerrar sesión">Cerrar Sesión</a>
     </footer>
 
     <script src="admin-script.js"></script>
