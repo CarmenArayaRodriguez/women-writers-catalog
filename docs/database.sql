@@ -5,7 +5,7 @@
 -- Dumped from database version 16.3
 -- Dumped by pg_dump version 16.3
 
--- Started on 2026-04-29 07:14:18 -04
+-- Started on 2026-05-16 18:16:47 -04
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -20,11 +20,13 @@ SET row_security = off;
 
 --
 -- TOC entry 5 (class 2615 OID 224278)
--- Name: public; Type: SCHEMA; Schema: -; Owner: -
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
 CREATE SCHEMA public;
 
+
+ALTER SCHEMA public OWNER TO postgres;
 
 SET default_tablespace = '';
 
@@ -32,7 +34,7 @@ SET default_table_access_method = heap;
 
 --
 -- TOC entry 218 (class 1259 OID 224400)
--- Name: User; Type: TABLE; Schema: public; Owner: -
+-- Name: User; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public."User" (
@@ -44,9 +46,11 @@ CREATE TABLE public."User" (
 );
 
 
+ALTER TABLE public."User" OWNER TO postgres;
+
 --
 -- TOC entry 215 (class 1259 OID 224279)
--- Name: _prisma_migrations; Type: TABLE; Schema: public; Owner: -
+-- Name: _prisma_migrations; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public._prisma_migrations (
@@ -61,9 +65,11 @@ CREATE TABLE public._prisma_migrations (
 );
 
 
+ALTER TABLE public._prisma_migrations OWNER TO postgres;
+
 --
 -- TOC entry 216 (class 1259 OID 224290)
--- Name: authors; Type: TABLE; Schema: public; Owner: -
+-- Name: authors; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.authors (
@@ -75,9 +81,11 @@ CREATE TABLE public.authors (
 );
 
 
+ALTER TABLE public.authors OWNER TO postgres;
+
 --
 -- TOC entry 217 (class 1259 OID 224298)
--- Name: books; Type: TABLE; Schema: public; Owner: -
+-- Name: books; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.books (
@@ -93,10 +101,12 @@ CREATE TABLE public.books (
 );
 
 
+ALTER TABLE public.books OWNER TO postgres;
+
 --
 -- TOC entry 3616 (class 0 OID 224400)
 -- Dependencies: 218
--- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public."User" (id, email, password, role, "createdAt") FROM stdin;
@@ -107,7 +117,7 @@ COPY public."User" (id, email, password, role, "createdAt") FROM stdin;
 --
 -- TOC entry 3613 (class 0 OID 224279)
 -- Dependencies: 215
--- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count) FROM stdin;
@@ -119,7 +129,7 @@ e4884fa6-6f55-4885-9526-b70734926911	3d96e73fb4e2ef2ac3cff8174f7715a2db4bff8d11d
 --
 -- TOC entry 3614 (class 0 OID 224290)
 -- Dependencies: 216
--- Data for Name: authors; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: authors; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.authors (id, first_name, last_name, country, bio) FROM stdin;
@@ -140,16 +150,16 @@ b9da7d15-528c-4e6e-834d-1ebbed6c9f3b	Lina	Meruane	Chile	Reconocida escritora chi
 --
 -- TOC entry 3615 (class 0 OID 224298)
 -- Dependencies: 217
--- Data for Name: books; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: books; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.books (id, title, short_description, synopsis, cover_image_url, publisher, year, genre, author_id) FROM stdin;
-4c0d1cf8-2cda-4598-aa36-ce4421ee0f4d	Antigua vida mía	Una historia de amistad y reencuentro.	Josefa Ferrer, una famosa cantautora, y Violeta Dasinski, una arquitecta, entrelazan sus vidas en un relato de sororidad, violencia de género y búsqueda de libertad en Guatemala y Chile.	antigua-vida-mia.jpg	Alfaguara	1995	Novela	0340b4d1-2300-46db-b29f-9d54956b1275
 ebaff110-4069-44d1-a9e9-b88ac9fa7220	Arráncame la vida	Relato sobre el poder y la libertad femenina.	Catalina Ascencio se casa joven con el general Andrés Ascencio en el México posrevolucionario, descubriendo que su mundo de privilegios es una cárcel de oro que debe romper.	arrancame-la-vida.jpg	Seix Barral	1985	Novela	a5765571-0b91-4d2d-80bb-af45e0becd88
 1b58352f-0416-4326-b5dd-6e40b98c5067	Chilean Electric	Crónica sobre la memoria y la luz.	A partir de la anécdota de su abuela presenciando la llegada de la luz eléctrica a la Plaza de Armas, la autora ilumina rincones oscuros de la historia de Chile y la memoria familiar.	chilean-electric.jpg	Alquimia	2015	Ensayo	674196ac-e2bf-4f18-97a0-78415fc64a10
 2fec6d43-5662-48cb-8bc4-3e05bbcffaef	Liceo de Niñas	Reflexión sobre la identidad escolar y social.	Una obra que transita entre dramaturgia y narrativa, donde ex alumnas de un liceo público chileno se enfrentan a sus fantasmas escolares y a promesas incumplidas.	liceo-de-ninas.jpg	Alquimia	2015	Novela	674196ac-e2bf-4f18-97a0-78415fc64a10
 ecaa919e-9536-4ce3-9bd4-2d8ca28bf0d9	Como agua para chocolate	Recetas y amores imposibles.	Tita De la Garza, condenada a no casarse para cuidar a su madre, expresa sus emociones prohibidas a través de platillos mágicos que afectan a quienes los prueban.	como-agua-para-chocolate.jpg	Anchor	1989	Realismo Mágico	686875e6-7a61-4277-a102-94143ae2115f
 b6f41845-1555-4839-906a-04130a182305	Desolación	Poesía desgarradora y profunda.	Poemario fundamental publicado en 192 publico aborda el dolor del amor perdido, maternidad frustrada, fe y conexión mística con la naturaleza.	desolacion.webp	Instituto de las Españas	1922	Poesía	cb029d92-44dc-423b-a098-d8b01500b8ed
+4c0d1cf8-2cda-4598-aa36-ce4421ee0f4d	Antigua vida mía	Una historia de amistad y reencuentro	Josefa Ferrer, una famosa cantautora, y Violeta Dasinski, una arquitecta, entrelazan sus vidas en un relato de sororidad, violencia de género y búsqueda de libertad en Guatemala y Chile.	antigua-vida-mia.jpg	Alfaguara	1995	Novela	0340b4d1-2300-46db-b29f-9d54956b1275
 515ea951-ff1b-4c50-9075-ffec93a60124	Hija de la fortuna	Aventura en la fiebre del oro.	Eliza Sommers, joven chilena criada por británicos en Valparaíso, viaja como polizón a California en busca de su amante durante la fiebre del oro de 1849.	hija-de-la-fortuna.jpg	Vintage	1999	Novela Histórica	dde5ce04-402b-4aae-a2e1-a8025f83786f
 3a084ebd-780f-4bd0-9195-d65943ed92b1	La casa de los espíritus	Saga familiar de los Trueba.	Narra la vida de la familia Trueba a lo largo de cuatro generaciones, mezclando pasiones, política y lo sobrenatural en un Chile en transformación.	la-casa-de-los-espiritus.jpeg	Plaza & Janés	1982	Realismo Mágico	dde5ce04-402b-4aae-a2e1-a8025f83786f
 261d6c55-8b37-4a49-9171-4cbd3ed9be26	Las heridas	Relatos sobre la educación y clase.	Crónicas que exploran las cicatrices del sistema educativo chileno, precariedad económica y descubrimiento de la identidad en un entorno desigual.	las-heridas.webp	Emecé	2017	Cuentos	f0c7daf3-7cab-4ace-8af5-6bb343cae0e7
@@ -158,12 +168,14 @@ b6f41845-1555-4839-906a-04130a182305	Desolación	Poesía desgarradora y profunda
 5795c8c0-07f5-48b4-b92d-3e9322462727	Temporada de huracanes	Investigación de un asesinato en un pueblo.	En el pueblo de La Matosa, aparece el cadáver de la Bruja. Testimonios reconstruyen una historia de miseria, violencia y superstición visceral.	temporada-de-huracanes.webp	Random House	2017	Novela	e14e4a23-b103-4e0a-94d9-4d6b9652033d
 59e715c1-d4fc-4c54-a08a-ce32b3954e4e	La condesa sangrienta	Relato sobre la aristócrata Erzsébet Báthory.	Un retrato poético y perturbador sobre la figura de la condesa Bathory, donde Pizarnik explora la belleza del horror, la perversión y la obsesión con un lenguaje magistral.	la-condesa-sangrienta.jpg	Libros del Zorro Rojo	1971	Ensayo/Relato	1e2566b8-0bb3-47bb-ac32-4e630a5bc0d6
 2e61c454-b670-4b4c-a902-2886daf6342c	Sangre en el ojo	Novela sobre la pérdida de la visión.	Tras sufrir una hemorragia ocular, una mujer debe reconfigurar su mundo, identidad y relaciones personales desde la repentina oscuridad, en un relato visceral.	sangre-en-el-ojo.jpeg	Eterna Cadencia	2012	Novela	b9da7d15-528c-4e6e-834d-1ebbed6c9f3b
+492040ba-baf4-4940-ba17-6a7bf0befca0	Contra los hijos	Ensayo crítico y punzante sobre los mandatos de la maternidad y la familia.	Rudo e impío, y cargado de humor, Contra los hijos cuestiona los discursos culturales que promueven la preeminencia del hijo y lo llevan a ocupar un lugar despótico en el siglo XXI. Versión revisada y ampliada del publicado en 2014, este ensayo es una provocadora advertencia contra el retorno de un modelo conservador que pretende devolver a las mujeres al encierro doméstico. Un ángel maléfico recorre impune nuestras conciencias: es el mensajero de la procreación. En esta diatriba Lina Meruane examina el retorno de este «ángel» que, amparado en la retórica ecologista, hace imperiosos llamados a la prolongación de la lactancia, la crianza intensiva y una infinita lista de prescripciones. De su polémico análisis sobre uno de los temas más determinantes y peor discutidos de nuestro tiempo se derivan observaciones sobre el estatuto de la pareja contemporánea, la discriminación laboral de las mujeres y los actuales sistemas educativos.	contra-los-hijos.jpeg	Literatura Random Hause	2018	Ensayo	b9da7d15-528c-4e6e-834d-1ebbed6c9f3b
+0ea0c784-4eb8-4359-9724-c26c3d70b253	Eva Luna	El viaje de una mujer que descubre el poder de contar historias en una Latinoamérica vibrante.	En Eva Luna, su tercera novela, Isabel Allende recupera su país a través de la memoria y la imaginación. La cautivadora protagonista de esta historia constituye un nosátlgico álter ego de la autora, que se llama a s̕í misma "ladrona de historias" precisamente porque en las historias radica el secreto de la vida y el mundo. Novela de hondo perfil humano, Eva Luna funde el destino individual con el colectivo mediante una fulgurante prosa de carácter épico. Sin duda, una de las mejores obras de la literatura latinoamericana de los últimos años.	eva-luna.jpg	Vintage Español	2017	Realismo mágico	dde5ce04-402b-4aae-a2e1-a8025f83786f
 \.
 
 
 --
 -- TOC entry 3468 (class 2606 OID 224408)
--- Name: User User_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: User User_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."User"
@@ -172,7 +184,7 @@ ALTER TABLE ONLY public."User"
 
 --
 -- TOC entry 3461 (class 2606 OID 224287)
--- Name: _prisma_migrations _prisma_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: _prisma_migrations _prisma_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public._prisma_migrations
@@ -181,7 +193,7 @@ ALTER TABLE ONLY public._prisma_migrations
 
 --
 -- TOC entry 3463 (class 2606 OID 224297)
--- Name: authors authors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: authors authors_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.authors
@@ -190,7 +202,7 @@ ALTER TABLE ONLY public.authors
 
 --
 -- TOC entry 3465 (class 2606 OID 224305)
--- Name: books books_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: books books_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.books
@@ -199,7 +211,7 @@ ALTER TABLE ONLY public.books
 
 --
 -- TOC entry 3466 (class 1259 OID 224409)
--- Name: User_email_key; Type: INDEX; Schema: public; Owner: -
+-- Name: User_email_key; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE UNIQUE INDEX "User_email_key" ON public."User" USING btree (email);
@@ -207,7 +219,7 @@ CREATE UNIQUE INDEX "User_email_key" ON public."User" USING btree (email);
 
 --
 -- TOC entry 3469 (class 2606 OID 224306)
--- Name: books books_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: books books_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.books
@@ -217,13 +229,13 @@ ALTER TABLE ONLY public.books
 --
 -- TOC entry 3622 (class 0 OID 0)
 -- Dependencies: 5
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
--- Completed on 2026-04-29 07:14:19 -04
+-- Completed on 2026-05-16 18:16:47 -04
 
 --
 -- PostgreSQL database dump complete

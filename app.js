@@ -159,6 +159,22 @@ const sslOptions = {
 
 const PORT = process.env.PORT || 3000;
 
+/**
+ * API Endpoints: Configuración del Sistema
+ * Proporciona acceso controlado a variables de entorno para la integración de APIs externas.
+ */
+app.get('/api/config/google-books', (req, res) => {
+    try {
+        const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+        if (!apiKey) {
+            return res.status(500).json({ error: 'Configuración de API no detectada en el entorno.' });
+        }
+        res.json({ apiKey });
+    } catch (err) {
+        res.status(500).json({ error: 'Error al recuperar la configuración.' });
+    }
+});
+
 https.createServer(sslOptions, app).listen(PORT, () => {
     console.log(`🚀 Servidor activo en: https://localhost:${PORT}`);
 });

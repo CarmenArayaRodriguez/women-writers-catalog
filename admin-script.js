@@ -1,25 +1,30 @@
 /**
- * Inicialización de eventos y carga de datos administrativos
+ * Configuración de servicios externos y variables de entorno.
+ * Se inicializa en blanco para ser cargada dinámicamente desde el servidor.
+ */
+let BOOKS_API_KEY = '';
+
+/**
+ * Inicialización de componentes y carga de datos administrativos.
  */
 document.addEventListener('DOMContentLoaded', () => {
+    loadConfig();
     fetchAuthors();
     loadBooksTable();
     setupEventListeners();
 });
 
 /**
- * Configuración de escuchadores de eventos
+ * Configuración de escuchadores de eventos.
  */
 function setupEventListeners() {
     const bookForm = document.getElementById('book-form');
     const linkLogout = document.getElementById('linkLogout');
 
-    /** Gestión de envío del formulario de libros */
     if (bookForm) {
         bookForm.addEventListener('submit', handleBookSubmit);
     }
 
-    /** Gestión de cierre de sesión */
     if (linkLogout) {
         linkLogout.addEventListener('click', (e) => {
             e.preventDefault();
@@ -30,7 +35,7 @@ function setupEventListeners() {
 }
 
 /**
- * Procesamiento de creación y actualización de libros
+ * Procesamiento de persistencia (creación y actualización) de libros.
  */
 async function handleBookSubmit(e) {
     e.preventDefault();
@@ -62,7 +67,8 @@ async function handleBookSubmit(e) {
             }
         });
         if (res.ok) {
-            alert(bookId ? "Registro actualizado" : "Registro creado");
+            const mensaje = bookId ? "Obra actualizada en el catálogo" : "Nueva obra registrada con éxito";
+            showToast(mensaje, "success");
             resetBookForm();
             loadBooksTable();
         }
@@ -72,7 +78,7 @@ async function handleBookSubmit(e) {
 }
 
 /**
- * Renderizado de tabla de gestión de libros
+ * Renderizado dinámico de la tabla de gestión de obras.
  */
 async function loadBooksTable() {
     try {
@@ -103,7 +109,7 @@ async function loadBooksTable() {
 }
 
 /**
- * Carga de datos de libro en formulario para edición
+ * Recuperación de metadatos de obra para edición en formulario.
  */
 async function prepareBookEdit(id) {
     const res = await fetch(`/api/books/${id}`);
@@ -129,7 +135,7 @@ async function prepareBookEdit(id) {
 }
 
 /**
- * Eliminación de registro de libro
+ * Eliminación lógica y física de registros de libros.
  */
 async function deleteBook(id, title, authorFullName) {
     if (confirm(`¿Eliminar "${title}" de ${authorFullName}?`)) {
@@ -148,7 +154,92 @@ async function deleteBook(id, title, authorFullName) {
 }
 
 /**
- * Obtención y carga de autoras en selector
+ * Carga de credenciales de infraestructura desde el entorno del servidor.
+ */
+async function loadConfig() {
+    try {
+        const res = await fetch('/api/config/google-books');
+        const config = await res.json();
+        BOOKS_API_KEY = config.apiKey;
+        console.log("Evidencia: Configuración de Books API cargada exitosamente.");
+    } catch (err) {
+        console.error("Anomalía: Error al cargar la configuración de la API:", err);
+    }
+}
+
+/**
+ * Consulta de metadatos bibliográficos mediante Google Books API.
+ * Implementa gestión de estados (spinners) y persistencia en caché local.
+ */
+async function searchBookInGoogle() {
+    const titleInput = document.getElementById('title');
+    const title = titleInput.value;
+    const searchBtn = document.querySelector('.btn-api-search');
+    
+    if (!title) {
+        showToast("Error: Ingrese un título para la consulta externa", "error");
+        return;
+    }
+
+    // Gestión del estado de carga en interfaz
+    searchBtn.disabled = true;
+    const originalText = searchBtn.innerText;
+    searchBtn.innerText = "Cargando...";
+
+    try {
+        // Estrategia de optimización: Validación de caché local
+        const cacheKey = `book_cache_${title.toLowerCase().trim()}`;
+        const cachedResult = localStorage.getItem(cacheKey);
+
+        if (cachedResult) {
+            console.log("Evidencia: Datos recuperados de LocalStorage.");
+            const bookInfo = JSON.parse(cachedResult);
+            fillFormWithData(bookInfo);
+            showToast("Datos recuperados de la caché local", "success");
+            return;
+        }
+
+        // Consumo de datos dinámicos mediante Axios
+        const response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
+            params: {
+                q: `intitle:${title}`,
+                key: BOOKS_API_KEY
+            }
+        });
+
+        if (response.data.totalItems > 0) {
+            const bookInfo = response.data.items[0].volumeInfo;
+            
+            // Persistencia en caché para optimización de rendimiento
+            localStorage.setItem(cacheKey, JSON.stringify(bookInfo));
+            
+            fillFormWithData(bookInfo);
+            showToast("Datos recuperados de Google Books", "success");
+            
+        } else {
+            showToast("No se encontraron registros coincidentes", "error"); 
+        }
+    } catch (error) {
+        console.error("Anomalía en la integración externa:", error.message);
+        showToast("Error de conexión con el servicio externo", "error"); 
+    } finally {
+        // Restablecimiento de la interactividad del control
+        searchBtn.disabled = false;
+        searchBtn.innerText = originalText;
+    }
+}
+
+/**
+ * Función auxiliar para el mapeo de datos en el formulario.
+ */
+function fillFormWithData(bookInfo) {
+    document.getElementById('synopsis').value = bookInfo.description || '';
+    document.getElementById('publisher').value = bookInfo.publisher || '';
+    document.getElementById('year').value = bookInfo.publishedDate ? bookInfo.publishedDate.split('-')[0] : '';
+}
+
+/**
+ * Obtención y renderizado de autoras en el control de selección.
  */
 function fetchAuthors() {
     fetch('/api/authors')
@@ -164,7 +255,7 @@ function fetchAuthors() {
 }
 
 /**
- * Control de visualización del formulario de autoras
+ * Control de visibilidad del componente de registro de autoras.
  */
 function toggleNewAuthorForm() {
     const div = document.getElementById('new-author-section');
@@ -174,7 +265,7 @@ function toggleNewAuthorForm() {
 }
 
 /**
- * Persistencia de datos de autora (Creación/Edición)
+ * Persistencia de entidades de tipo Autora.
  */
 async function saveAuthor() {
     const id = document.getElementById('edit-author-id')?.value; 
@@ -183,7 +274,10 @@ async function saveAuthor() {
     const country = document.getElementById('new-author-country').value;
     const bio = document.getElementById('new-author-bio').value;
 
-    if (!first_name || !last_name) return alert("Nombre y apellido requeridos");
+    if (!first_name || !last_name) {
+        showToast("Error: Campos obligatorios incompletos", "error");
+        return;
+    }
 
     const url = id ? `/api/authors/${id}` : '/api/authors';
     const method = id ? 'PUT' : 'POST';
@@ -199,7 +293,7 @@ async function saveAuthor() {
         });
 
         if (res.ok) {
-            alert("Datos de autora guardados");
+            showToast("Datos de autora persistidos correctamente", "success");
             resetAuthorForm();
             document.getElementById('new-author-section').style.display = 'none';
             fetchAuthors();
@@ -210,7 +304,7 @@ async function saveAuthor() {
 }
 
 /**
- * Restablecimiento de formulario de autoras
+ * Reinicio del estado del formulario de autoras.
  */
 function resetAuthorForm() {
     document.getElementById('edit-author-id').value = '';
@@ -224,11 +318,14 @@ function resetAuthorForm() {
 }
 
 /**
- * Carga de datos de autora para edición
+ * Recuperación de datos de autora para procesos de actualización.
  */
 async function loadAuthorDataForEdit() {
     const authorId = document.getElementById('author_select').value;
-    if (!authorId) return alert("Seleccione una autora de la lista");
+    if (!authorId) {
+        showToast("Error: Selección de autora requerida", "error");
+        return;
+    }
 
     try {
         const res = await fetch('/api/authors');
@@ -250,7 +347,7 @@ async function loadAuthorDataForEdit() {
 }
 
 /**
- * Restablecimiento de formulario de libros
+ * Reinicio del estado del formulario de obras.
  */
 function resetBookForm() {
     const bookForm = document.getElementById('book-form');
@@ -263,4 +360,33 @@ function resetBookForm() {
     
     document.getElementById('btn-submit').innerText = "Guardar Libro";
     document.getElementById('btn-cancel').style.display = "none";
+}
+
+/**
+ * Sistema de notificaciones asíncronas (Toast).
+ * Provee retroalimentación no bloqueante al usuario.
+ */
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icon = type === 'success' ? '✓' : '✕';
+    
+    toast.innerHTML = `
+        <span style="font-weight: bold;">${icon}</span>
+        <span>${message}</span>
+    `;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.add('toast-fade-out');
+        setTimeout(() => {
+            if (toast.parentNode === container) {
+                container.removeChild(toast);
+            }
+        }, 500);
+    }, 3000);
 }
