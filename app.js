@@ -116,11 +116,19 @@ app.get('/api/books/:id', async (req, res) => {
 
 app.post('/api/books', authenticateToken, upload.single('cover_file'), async (req, res) => {
     try {
-        const { title, author_id, short_description, synopsis, publisher, year, genre } = req.body;
+        const { title, isbn, author_id, short_description, synopsis, publisher, year, genre } = req.body;
+
+        const sanitizedIsbn = isbn && isbn.trim() !== '' ? isbn.replace(/[- ]/g, "").trim() : null;
+
         const newBook = await prisma.books.create({
             data: {
-                title, short_description, synopsis, publisher,
-                year: parseInt(year), genre,
+                title,
+                isbn: sanitizedIsbn, 
+                short_description,
+                synopsis,
+                publisher,
+                year: parseInt(year),
+                genre,
                 cover_image_url: req.file ? req.file.filename : 'default.jpg',
                 authors: { connect: { id: author_id } }
             }
@@ -132,21 +140,100 @@ app.post('/api/books', authenticateToken, upload.single('cover_file'), async (re
 });
 
 app.put('/api/books/:id', authenticateToken, upload.single('cover_file'), async (req, res) => {
-    const { id } = req.params;
-    const { title, author_id, short_description, synopsis, publisher, year, genre } = req.body;
-    const updateData = { 
-        title, short_description, synopsis, publisher, 
-        year: parseInt(year), genre, 
-        authors: { connect: { id: author_id } } 
-    };
-    if (req.file) updateData.cover_image_url = req.file.filename;
-    const result = await prisma.books.update({ where: { id }, data: updateData });
-    res.json(result);
+    try {
+        const { id } = req.params;
+        const { title, isbn, author_id, short_description, synopsis, publisher, year, genre } = req.body;
+        
+        const sanitizedIsbn = isbn && isbn.trim() !== '' ? isbn.replace(/[- ]/g, "").trim() : null;
+
+        const updateData = { 
+            title,
+            isbn: sanitizedIsbn, 
+            short_description,
+            synopsis,
+            publisher, 
+            year: parseInt(year),
+            genre, 
+            authors: { connect: { id: author_id } } 
+        };
+        
+        if (req.file) updateData.cover_image_url = req.file.filename;
+        
+        const result = await prisma.books.update({ where: { id }, data: updateData });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 app.delete('/api/books/:id', authenticateToken, async (req, res) => {
     await prisma.books.delete({ where: { id: req.params.id } });
     res.json({ success: true });
+});
+
+/**
+ * API Endpoint: Consulta externa de metadatos por TÍTULO 
+ * Realiza una petición a Google Books por título y devuelve el primer volumen crudo sin filtros.
+ */
+app.get('/api/books/search-google-title/:title', authenticateToken, async (req, res) => {
+    const { title } = req.params;
+
+    try {
+        const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+        const googleUrl = `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(title)}${apiKey ? `&key=${apiKey}` : ''}`;
+        
+        const apiResponse = await fetch(googleUrl);
+        const searchResult = await apiResponse.json();
+
+        if (!searchResult.items || searchResult.items.length === 0) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'No se encontraron metadatos para este título en Google Books.' 
+            });
+        }
+
+        res.json({ success: true, data: searchResult.items[0] });
+
+    } catch (err) {
+        res.status(500).json({ 
+            success: false, 
+            error: 'Error al comunicarse con el servicio externo de Google Books.',
+            details: err.message 
+        });
+    }
+});
+
+/**
+ * API Endpoint: Consulta externa de metadatos por ISBN 
+ * Realiza una petición a Google Books por ISBN y devuelve el volumen crudo sin filtros.
+ */
+app.get('/api/books/fetch-google/:isbn', authenticateToken, async (req, res) => {
+    const { isbn } = req.params;
+    const cleanIsbn = isbn.replace(/[- ]/g, "").trim();
+
+    try {
+        const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+        const googleUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${cleanIsbn}${apiKey ? `&key=${apiKey}` : ''}`;
+        
+        const apiResponse = await fetch(googleUrl);
+        const searchResult = await apiResponse.json();
+
+        if (!searchResult.items || searchResult.items.length === 0) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'No se encontraron metadatos para este ISBN en Google Books.' 
+            });
+        }
+
+        res.json({ success: true, data: searchResult.items[0] });
+
+    } catch (err) {
+        res.status(500).json({ 
+            success: false, 
+            error: 'Error al comunicarse con el servicio externo de Google Books.',
+            details: err.message 
+        });
+    }
 });
 
 /**

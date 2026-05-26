@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             /** Renderizado de sinopsis y ficha técnica */
             document.getElementById('book-synopsis').innerHTML = `<p>${book.synopsis}</p>`;
+            document.getElementById('book-isbn').textContent = book.isbn || 'No registrado';
             document.getElementById('book-publisher').textContent = book.publisher;
             document.getElementById('book-year').textContent = book.year;
             document.getElementById('book-genre').textContent = book.genre;

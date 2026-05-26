@@ -19,6 +19,7 @@ model authors {
 model books {
   id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title             String   @db.VarChar(255)
+  isbn              String?  @unique @db.VarChar(25)
   short_description String?
   synopsis          String?
   cover_image_url   String?  @db.VarChar(255)

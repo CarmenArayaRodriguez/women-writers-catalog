@@ -23,17 +23,26 @@
         
         <div class="form-card" role="region" aria-labelledby="form-title">
             <h1 id="form-title">Gestión de Obras</h1>
-            <p class="form-subtitle">Administración de la colección digital.</p>
             
             <form id="book-form" enctype="multipart/form-data" aria-describedby="form-title">
                 <input type="hidden" id="book-id">
 
                 <div class="form-group">
-                    <label for="title">Título de la obra</label>
+                    <label for="book-search-input">Asistente de Catalogación Automática (Escribe el Título o digita el ISBN)</label>
                     <div class="author-controls-row">
-                        <input type="text" id="title" placeholder="Ej: La casa de los espíritus" required aria-required="true">
-                        <button type="button" onclick="searchBookInGoogle()" class="btn-api-search" aria-label="Buscar datos en Google Books">Buscar</button>
+                        <input type="text" id="book-search-input" placeholder="Ej: La casa de los espíritus o 9788411630807...">
+                        <button type="button" id="btn-google-search" onclick="smartSearchInGoogle()" class="btn-api-search" aria-label="Consultar información de la obra en el catálogo externo">Buscar</button>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Título de la obra</label>
+                    <input type="text" id="title" placeholder="Título de la obra obtenido" required aria-required="true">
+                </div>
+
+                <div class="form-group">
+                    <label for="book-isbn-input">Código ISBN</label>
+                    <input type="text" id="book-isbn-input" placeholder="Ej: 9788411630807">
                 </div>
 
                 <div class="form-group">
@@ -131,6 +140,38 @@
                     <tbody id="admin-table-body">
                         </tbody>
                 </table>
+            </div>
+        </div>
+
+        <div id="author-check-modal" class="custom-modal" style="display: none;" role="dialog" aria-labelledby="modal-check-title" aria-modal="true">
+            <div class="modal-content">
+                <h3 id="modal-check-title">Posible Autora Duplicada</h3>
+                <p>Escribiste un nombre muy similar a una autora que ya existe en el catálogo:</p>
+                
+                <div id="modal-author-details" class="matching-author-card"></div>
+
+                <div class="modal-actions-row">
+                    <button type="button" id="btn-modal-use-existing" class="btn-modal-primary">Usar Existente</button>
+                    <button type="button" id="btn-modal-force-create" class="btn-modal-secondary">Crear de todas formas</button>
+                    <button type="button" onclick="closeAuthorCheckModal()" class="btn-modal-cancel">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="book-check-modal" class="custom-modal" style="display: none;" role="dialog" aria-labelledby="modal-book-title" aria-modal="true">
+            <div class="modal-content">
+                <h3 id="modal-book-title">Posible Libro Duplicado</h3>
+                <p>Escribiste un título muy similar a una obra que esta autora ya tiene registrada en el catálogo</p>
+                
+                <div id="modal-book-details"></div>
+
+                <p class="modal-question">¿Qué deseas hacer?</p>
+
+                <div class="modal-actions-row">
+                    <button type="button" id="btn-modal-use-existing-book" class="btn-modal-primary">Usar Existente</button>
+                    <button type="button" id="btn-modal-force-create-book" class="btn-modal-secondary">Crear de todas formas</button>
+                    <button type="button" onclick="closeBookCheckModal()" class="btn-modal-cancel">Cancelar</button>
+                </div>
             </div>
         </div>
 

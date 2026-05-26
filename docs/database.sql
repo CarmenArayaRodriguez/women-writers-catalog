@@ -5,7 +5,7 @@
 -- Dumped from database version 16.3
 -- Dumped by pg_dump version 16.3
 
--- Started on 2026-05-16 18:16:47 -04
+-- Started on 2026-05-25 14:46:59 -04
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -97,14 +97,15 @@ CREATE TABLE public.books (
     publisher character varying(100),
     year integer,
     genre character varying(100),
-    author_id uuid
+    author_id uuid,
+    isbn character varying(25)
 );
 
 
 ALTER TABLE public.books OWNER TO postgres;
 
 --
--- TOC entry 3616 (class 0 OID 224400)
+-- TOC entry 3617 (class 0 OID 224400)
 -- Dependencies: 218
 -- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -115,7 +116,7 @@ COPY public."User" (id, email, password, role, "createdAt") FROM stdin;
 
 
 --
--- TOC entry 3613 (class 0 OID 224279)
+-- TOC entry 3614 (class 0 OID 224279)
 -- Dependencies: 215
 -- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -123,11 +124,12 @@ COPY public."User" (id, email, password, role, "createdAt") FROM stdin;
 COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count) FROM stdin;
 6ef61224-dc2b-485f-be00-107ca2f1a79d	8f4cc3f16578bad13ecb78cf727d65c2a5031628955a506df9fed1695e6038ff	2026-04-28 18:43:04.478698-04	20260428224304_init_structured_schema	\N	\N	2026-04-28 18:43:04.347511-04	1
 e4884fa6-6f55-4885-9526-b70734926911	3d96e73fb4e2ef2ac3cff8174f7715a2db4bff8d11d1ebf1453c2d2ab551fe98	2026-04-28 18:56:32.0603-04	20260428225632_add_user_table_uuid	\N	\N	2026-04-28 18:56:32.053867-04	1
+a07c4870-006a-44f3-aa5c-ccfff0d4b7cc	735a6e907528b325a12fed6adc41a8136f972e4ccbf960cceb6a90ed4f948381	2026-05-19 08:04:34.753095-04	20260519120434_add_optional_isbn_to_books	\N	\N	2026-05-19 08:04:34.747282-04	1
 \.
 
 
 --
--- TOC entry 3614 (class 0 OID 224290)
+-- TOC entry 3615 (class 0 OID 224290)
 -- Dependencies: 216
 -- Data for Name: authors; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -140,41 +142,42 @@ a5765571-0b91-4d2d-80bb-af45e0becd88	Ángeles	Mastretta	México	Escritora mexica
 cb029d92-44dc-423b-a098-d8b01500b8ed	Gabriela	Mistral	Chile	La primera mujer latinoamericana en ganar el Premio Nobel de Literatura.
 dde5ce04-402b-4aae-a2e1-a8025f83786f	Isabel	Allende	Chile	Autora de gran éxito mundial, referente de la narrativa hispana.
 f0c7daf3-7cab-4ace-8af5-6bb343cae0e7	Arelis	Uribe	Chile	Periodista y escritora chilena destacada por su narrativa directa y social.
-787d2c10-3f48-429b-8a96-d7239562224b	Mariana	Enríquez	Argentina	Maestra del terror contemporáneo y urbano latinoamericano.
 e14e4a23-b103-4e0a-94d9-4d6b9652033d	Fernanda	Melchor	México	Escritora mexicana reconocida por su estilo visceral y crudo.
 1e2566b8-0bb3-47bb-ac32-4e630a5bc0d6	Alejandra	Pizarnik	Argentina	Una de las voces poéticas más intensas y profundas de la literatura latinoamericana del siglo XX.
 b9da7d15-528c-4e6e-834d-1ebbed6c9f3b	Lina	Meruane	Chile	Reconocida escritora chilena contemporánea, ganadora del premio Sor Juana Inés de la Cruz.
+787d2c10-3f48-429b-8a96-d7239562224b	Mariana	Enriquez	Argentina	Maestra del terror contemporáneo y urbano latinoamericano.
 \.
 
 
 --
--- TOC entry 3615 (class 0 OID 224298)
+-- TOC entry 3616 (class 0 OID 224298)
 -- Dependencies: 217
 -- Data for Name: books; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.books (id, title, short_description, synopsis, cover_image_url, publisher, year, genre, author_id) FROM stdin;
-ebaff110-4069-44d1-a9e9-b88ac9fa7220	Arráncame la vida	Relato sobre el poder y la libertad femenina.	Catalina Ascencio se casa joven con el general Andrés Ascencio en el México posrevolucionario, descubriendo que su mundo de privilegios es una cárcel de oro que debe romper.	arrancame-la-vida.jpg	Seix Barral	1985	Novela	a5765571-0b91-4d2d-80bb-af45e0becd88
-1b58352f-0416-4326-b5dd-6e40b98c5067	Chilean Electric	Crónica sobre la memoria y la luz.	A partir de la anécdota de su abuela presenciando la llegada de la luz eléctrica a la Plaza de Armas, la autora ilumina rincones oscuros de la historia de Chile y la memoria familiar.	chilean-electric.jpg	Alquimia	2015	Ensayo	674196ac-e2bf-4f18-97a0-78415fc64a10
-2fec6d43-5662-48cb-8bc4-3e05bbcffaef	Liceo de Niñas	Reflexión sobre la identidad escolar y social.	Una obra que transita entre dramaturgia y narrativa, donde ex alumnas de un liceo público chileno se enfrentan a sus fantasmas escolares y a promesas incumplidas.	liceo-de-ninas.jpg	Alquimia	2015	Novela	674196ac-e2bf-4f18-97a0-78415fc64a10
-ecaa919e-9536-4ce3-9bd4-2d8ca28bf0d9	Como agua para chocolate	Recetas y amores imposibles.	Tita De la Garza, condenada a no casarse para cuidar a su madre, expresa sus emociones prohibidas a través de platillos mágicos que afectan a quienes los prueban.	como-agua-para-chocolate.jpg	Anchor	1989	Realismo Mágico	686875e6-7a61-4277-a102-94143ae2115f
-b6f41845-1555-4839-906a-04130a182305	Desolación	Poesía desgarradora y profunda.	Poemario fundamental publicado en 192 publico aborda el dolor del amor perdido, maternidad frustrada, fe y conexión mística con la naturaleza.	desolacion.webp	Instituto de las Españas	1922	Poesía	cb029d92-44dc-423b-a098-d8b01500b8ed
-4c0d1cf8-2cda-4598-aa36-ce4421ee0f4d	Antigua vida mía	Una historia de amistad y reencuentro	Josefa Ferrer, una famosa cantautora, y Violeta Dasinski, una arquitecta, entrelazan sus vidas en un relato de sororidad, violencia de género y búsqueda de libertad en Guatemala y Chile.	antigua-vida-mia.jpg	Alfaguara	1995	Novela	0340b4d1-2300-46db-b29f-9d54956b1275
-515ea951-ff1b-4c50-9075-ffec93a60124	Hija de la fortuna	Aventura en la fiebre del oro.	Eliza Sommers, joven chilena criada por británicos en Valparaíso, viaja como polizón a California en busca de su amante durante la fiebre del oro de 1849.	hija-de-la-fortuna.jpg	Vintage	1999	Novela Histórica	dde5ce04-402b-4aae-a2e1-a8025f83786f
-3a084ebd-780f-4bd0-9195-d65943ed92b1	La casa de los espíritus	Saga familiar de los Trueba.	Narra la vida de la familia Trueba a lo largo de cuatro generaciones, mezclando pasiones, política y lo sobrenatural en un Chile en transformación.	la-casa-de-los-espiritus.jpeg	Plaza & Janés	1982	Realismo Mágico	dde5ce04-402b-4aae-a2e1-a8025f83786f
-261d6c55-8b37-4a49-9171-4cbd3ed9be26	Las heridas	Relatos sobre la educación y clase.	Crónicas que exploran las cicatrices del sistema educativo chileno, precariedad económica y descubrimiento de la identidad en un entorno desigual.	las-heridas.webp	Emecé	2017	Cuentos	f0c7daf3-7cab-4ace-8af5-6bb343cae0e7
-813d23bd-67b4-43fa-a7dc-641703327a41	Quiltras	Historias de mujeres en los márgenes.	Cuentos protagonizados por mujeres jóvenes de barrios populares que retratan amistad, despertar sexual y barreras sociales con lenguaje crudo.	quiltras.jpg	Los Libros de la Mujer Rota	2016	Cuentos	f0c7daf3-7cab-4ace-8af5-6bb343cae0e7
-3a00e12a-fe50-4f12-a523-3b0c12356406	Nuestra parte de noche	Sagas familiares y ritos oscuros.	Un padre y un hijo atraviesan Argentina por carretera. Pertenecen a una Orden que rinde culto a la Oscuridad, mezclando terror sobrenatural con historia de dictadura.	nuestra-parte-de-noche.jpeg	Anagrama	2019	Terror	787d2c10-3f48-429b-8a96-d7239562224b
-5795c8c0-07f5-48b4-b92d-3e9322462727	Temporada de huracanes	Investigación de un asesinato en un pueblo.	En el pueblo de La Matosa, aparece el cadáver de la Bruja. Testimonios reconstruyen una historia de miseria, violencia y superstición visceral.	temporada-de-huracanes.webp	Random House	2017	Novela	e14e4a23-b103-4e0a-94d9-4d6b9652033d
-59e715c1-d4fc-4c54-a08a-ce32b3954e4e	La condesa sangrienta	Relato sobre la aristócrata Erzsébet Báthory.	Un retrato poético y perturbador sobre la figura de la condesa Bathory, donde Pizarnik explora la belleza del horror, la perversión y la obsesión con un lenguaje magistral.	la-condesa-sangrienta.jpg	Libros del Zorro Rojo	1971	Ensayo/Relato	1e2566b8-0bb3-47bb-ac32-4e630a5bc0d6
-2e61c454-b670-4b4c-a902-2886daf6342c	Sangre en el ojo	Novela sobre la pérdida de la visión.	Tras sufrir una hemorragia ocular, una mujer debe reconfigurar su mundo, identidad y relaciones personales desde la repentina oscuridad, en un relato visceral.	sangre-en-el-ojo.jpeg	Eterna Cadencia	2012	Novela	b9da7d15-528c-4e6e-834d-1ebbed6c9f3b
-492040ba-baf4-4940-ba17-6a7bf0befca0	Contra los hijos	Ensayo crítico y punzante sobre los mandatos de la maternidad y la familia.	Rudo e impío, y cargado de humor, Contra los hijos cuestiona los discursos culturales que promueven la preeminencia del hijo y lo llevan a ocupar un lugar despótico en el siglo XXI. Versión revisada y ampliada del publicado en 2014, este ensayo es una provocadora advertencia contra el retorno de un modelo conservador que pretende devolver a las mujeres al encierro doméstico. Un ángel maléfico recorre impune nuestras conciencias: es el mensajero de la procreación. En esta diatriba Lina Meruane examina el retorno de este «ángel» que, amparado en la retórica ecologista, hace imperiosos llamados a la prolongación de la lactancia, la crianza intensiva y una infinita lista de prescripciones. De su polémico análisis sobre uno de los temas más determinantes y peor discutidos de nuestro tiempo se derivan observaciones sobre el estatuto de la pareja contemporánea, la discriminación laboral de las mujeres y los actuales sistemas educativos.	contra-los-hijos.jpeg	Literatura Random Hause	2018	Ensayo	b9da7d15-528c-4e6e-834d-1ebbed6c9f3b
-0ea0c784-4eb8-4359-9724-c26c3d70b253	Eva Luna	El viaje de una mujer que descubre el poder de contar historias en una Latinoamérica vibrante.	En Eva Luna, su tercera novela, Isabel Allende recupera su país a través de la memoria y la imaginación. La cautivadora protagonista de esta historia constituye un nosátlgico álter ego de la autora, que se llama a s̕í misma "ladrona de historias" precisamente porque en las historias radica el secreto de la vida y el mundo. Novela de hondo perfil humano, Eva Luna funde el destino individual con el colectivo mediante una fulgurante prosa de carácter épico. Sin duda, una de las mejores obras de la literatura latinoamericana de los últimos años.	eva-luna.jpg	Vintage Español	2017	Realismo mágico	dde5ce04-402b-4aae-a2e1-a8025f83786f
+COPY public.books (id, title, short_description, synopsis, cover_image_url, publisher, year, genre, author_id, isbn) FROM stdin;
+4c0d1cf8-2cda-4598-aa36-ce4421ee0f4d	Antigua vida mía	Una historia de amistad y reencuentro	Josefa Ferrer, una famosa cantautora, y Violeta Dasinski, una arquitecta, entrelazan sus vidas en un relato de sororidad, violencia de género y búsqueda de libertad en Guatemala y Chile.	antigua-vida-mia.jpg	Alfaguara	1995	Novela	0340b4d1-2300-46db-b29f-9d54956b1275	9788420448558
+ebaff110-4069-44d1-a9e9-b88ac9fa7220	Arráncame la vida	Relato sobre el poder y la libertad femenina.	Catalina Ascencio se casa joven con el general Andrés Ascencio en el México posrevolucionario, descubriendo que su mundo de privilegios es una cárcel de oro que debe romper.	arrancame-la-vida.jpg	Seix Barral	1985	Novela	a5765571-0b91-4d2d-80bb-af45e0becd88	9786070712715
+1b58352f-0416-4326-b5dd-6e40b98c5067	Chilean Electric	Crónica sobre la memoria y la luz.	A partir de la anécdota de su abuela presenciando la llegada de la luz eléctrica a la Plaza de Armas, la autora ilumina rincones oscuros de la historia de Chile y la memoria familiar.	chilean-electric.jpg	Alquimia	2015	Ensayo	674196ac-e2bf-4f18-97a0-78415fc64a10	9789560005205
+ecaa919e-9536-4ce3-9bd4-2d8ca28bf0d9	Como agua para chocolate	Recetas y amores imposibles.	Tita De la Garza, condenada a no casarse para cuidar a su madre, expresa sus emociones prohibidas a través de platillos mágicos que afectan a quienes los prueban.	como-agua-para-chocolate.jpg	Anchor	1989	Realismo Mágico	686875e6-7a61-4277-a102-94143ae2115f	9780307351630
+b6f41845-1555-4839-906a-04130a182305	Desolación	Poesía desgarradora y profunda.	Poemario fundamental publicado en 192 publico aborda el dolor del amor perdido, maternidad frustrada, fe y conexión mística con la naturaleza.	desolacion.webp	Instituto de las Españas	1922	Poesía	cb029d92-44dc-423b-a098-d8b01500b8ed	9789561125278
+2fec6d43-5662-48cb-8bc4-3e05bbcffaef	Liceo de Niñas	Reflexión sobre la identidad escolar y social.	Una obra que transita entre dramaturgia y narrativa, donde ex alumnas de un liceo público chileno se enfrentan a sus fantasmas escolares y a promesas incumplidas.	liceo-de-ninas.jpg	Alquimia	2015	Novela	674196ac-e2bf-4f18-97a0-78415fc64a10	9789560006325
+492040ba-baf4-4940-ba17-6a7bf0befca0	Contra los hijos	Ensayo crítico y punzante sobre los mandatos de la maternidad y la familia.	Rudo e impío, y cargado de humor, Contra los hijos cuestiona los discursos culturales que promueven la preeminencia del hijo y lo llevan a ocupar un lugar despótico en el siglo XXI. Versión revisada y ampliada del publicado en 2014, este ensayo es una provocadora advertencia contra el retorno de un modelo conservador que pretende devolver a las mujeres al encierro doméstico. Un ángel maléfico recorre impune nuestras conciencias: es el mensajero de la procreación. En esta diatriba Lina Meruane examina el retorno de este «ángel» que, amparado en la retórica ecologista, hace imperiosos llamados a la prolongación de la lactancia, la crianza intensiva y una infinita lista de prescripciones. De su polémico análisis sobre uno de los temas más determinantes y peor discutidos de nuestro tiempo se derivan observaciones sobre el estatuto de la pareja contemporánea, la discriminación laboral de las mujeres y los actuales sistemas educativos.	contra-los-hijos.jpeg	Literatura Random Hause	2018	Ensayo	b9da7d15-528c-4e6e-834d-1ebbed6c9f3b	9789569259166
+3a00e12a-fe50-4f12-a523-3b0c12356406	Nuestra parte de noche	Sagas familiares y ritos oscuros.	Un padre y un hijo atraviesan Argentina por carretera. Pertenecen a una Orden que rinde culto a la Oscuridad, mezclando terror sobrenatural con historia de dictadura.	nuestra-parte-de-noche.jpeg	Anagrama	2019	Terror	787d2c10-3f48-429b-8a96-d7239562224b	9788433998859
+cda5f1ed-e674-469d-a7c8-fad5d42b12b5	El Albergue de Las Mujeres Tristes	Una emotiva historia sobre la complicidad femenina, el dolor y la sanación en un místico refugio de la isla de Chiloé.	En un albergue ubicado en la remota isla de Chiloé, un grupo de mujeres se reúne para sanar las heridas del alma, el desamor y las complejidades de sus vidas. La llegada de Floreana, una historiadora sumida en una profunda crisis existencial, desencadena un cruce de confesiones, complicidades y reflexiones. A través de una narrativa coral y emotiva, Marcela Serrano teje una radiografía inolvidable sobre la vulnerabilidad, la fortaleza femenina, la solidaridad y la búsqueda incesante de la propia identidad en el Chile contemporáneo.	el-albergue-de-las-mujeres-tristes.jpg	Alfaguara	2011	Novela	0340b4d1-2300-46db-b29f-9d54956b1275	9789562399852
+0ea0c784-4eb8-4359-9724-c26c3d70b253	Eva Luna	El viaje de una mujer que descubre el poder de contar historias en una Latinoamérica vibrante.	En Eva Luna, su tercera novela, Isabel Allende recupera su país a través de la memoria y la imaginación. La cautivadora protagonista de esta historia constituye un nosátlgico álter ego de la autora, que se llama a s̕í misma "ladrona de historias" precisamente porque en las historias radica el secreto de la vida y el mundo. Novela de hondo perfil humano, Eva Luna funde el destino individual con el colectivo mediante una fulgurante prosa de carácter épico. Sin duda, una de las mejores obras de la literatura latinoamericana de los últimos años.	eva-luna.jpg	Vintage Español	2017	Realismo mágico	dde5ce04-402b-4aae-a2e1-a8025f83786f	9788497930215
+515ea951-ff1b-4c50-9075-ffec93a60124	Hija de la fortuna	Aventura en la fiebre del oro.	Eliza Sommers, joven chilena criada por británicos en Valparaíso, viaja como polizón a California en busca de su amante durante la fiebre del oro de 1849.	hija-de-la-fortuna.jpg	Vintage	1999	Novela Histórica	dde5ce04-402b-4aae-a2e1-a8025f83786f	9788401341519
+3a084ebd-780f-4bd0-9195-d65943ed92b1	La casa de los espíritus	Saga familiar de los Trueba.	Narra la vida de la familia Trueba a lo largo de cuatro generaciones, mezclando pasiones, política y lo sobrenatural en un Chile en transformación.	la-casa-de-los-espiritus.jpeg	Plaza & Janés	1982	Realismo Mágico	dde5ce04-402b-4aae-a2e1-a8025f83786f	9788497592208
+59e715c1-d4fc-4c54-a08a-ce32b3954e4e	La condesa sangrienta	Relato sobre la aristócrata Erzsébet Báthory.	Un retrato poético y perturbador sobre la figura de la condesa Bathory, donde Pizarnik explora la belleza del horror, la perversión y la obsesión con un lenguaje magistral.	la-condesa-sangrienta.jpg	Libros del Zorro Rojo	1971	Ensayo/Relato	1e2566b8-0bb3-47bb-ac32-4e630a5bc0d6	9788476698389
+813d23bd-67b4-43fa-a7dc-641703327a41	Quiltras	Historias de mujeres en los márgenes.	Cuentos protagonizados por mujeres jóvenes de barrios populares que retratan amistad, despertar sexual y barreras sociales con lenguaje crudo.	quiltras.jpg	Los Libros de la Mujer Rota	2016	Cuentos	f0c7daf3-7cab-4ace-8af5-6bb343cae0e7	9789569866005
+2e61c454-b670-4b4c-a902-2886daf6342c	Sangre en el ojo	Novela sobre la pérdida de la visión.	Tras sufrir una hemorragia ocular, una mujer debe reconfigurar su mundo, identidad y relaciones personales desde la repentina oscuridad, en un relato visceral.	sangre-en-el-ojo.jpeg	Eterna Cadencia	2012	Novela	b9da7d15-528c-4e6e-834d-1ebbed6c9f3b	9788433997456
+5795c8c0-07f5-48b4-b92d-3e9322462727	Temporada de huracanes	Investigación de un asesinato en un pueblo.	En el pueblo de La Matosa, aparece el cadáver de la Bruja. Testimonios reconstruyen una historia de miseria, violencia y superstición visceral.	temporada-de-huracanes.webp	Random House	2017	Novela	e14e4a23-b103-4e0a-94d9-4d6b9652033d	9781925713435
+261d6c55-8b37-4a49-9171-4cbd3ed9be26	Las heridas	Relatos sobre la educación y clase.	Crónicas que exploran las cicatrices del sistema educativo chileno, precariedad económica y descubrimiento de la identidad en un entorno desigual.	las-heridas.webp	Emecé	2017	Cuentos	f0c7daf3-7cab-4ace-8af5-6bb343cae0e7	9789566113119
 \.
 
 
 --
--- TOC entry 3468 (class 2606 OID 224408)
+-- TOC entry 3469 (class 2606 OID 224408)
 -- Name: User User_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -201,7 +204,7 @@ ALTER TABLE ONLY public.authors
 
 
 --
--- TOC entry 3465 (class 2606 OID 224305)
+-- TOC entry 3466 (class 2606 OID 224305)
 -- Name: books books_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -210,7 +213,7 @@ ALTER TABLE ONLY public.books
 
 
 --
--- TOC entry 3466 (class 1259 OID 224409)
+-- TOC entry 3467 (class 1259 OID 224409)
 -- Name: User_email_key; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -218,7 +221,15 @@ CREATE UNIQUE INDEX "User_email_key" ON public."User" USING btree (email);
 
 
 --
--- TOC entry 3469 (class 2606 OID 224306)
+-- TOC entry 3464 (class 1259 OID 232504)
+-- Name: books_isbn_key; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX books_isbn_key ON public.books USING btree (isbn);
+
+
+--
+-- TOC entry 3470 (class 2606 OID 224306)
 -- Name: books books_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -227,7 +238,7 @@ ALTER TABLE ONLY public.books
 
 
 --
--- TOC entry 3622 (class 0 OID 0)
+-- TOC entry 3623 (class 0 OID 0)
 -- Dependencies: 5
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -235,7 +246,7 @@ ALTER TABLE ONLY public.books
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
--- Completed on 2026-05-16 18:16:47 -04
+-- Completed on 2026-05-25 14:47:01 -04
 
 --
 -- PostgreSQL database dump complete

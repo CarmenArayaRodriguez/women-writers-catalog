@@ -35,14 +35,102 @@ function setupEventListeners() {
 }
 
 /**
- * Procesamiento de persistencia (creación y actualización) de libros.
+ * Procesamiento de persistencia (creación y actualización) de libros con control de duplicados y faltas de ortografía (Español)
  */
 async function handleBookSubmit(e) {
     e.preventDefault();
-    const formData = new FormData();
     const bookId = document.getElementById('book-id').value;
+    const title = document.getElementById('title').value.trim();
+    const authorId = document.getElementById('author_select').value;
 
+    if (!title || !authorId) {
+        showToast("Error: Título y Autora son campos obligatorios", "error");
+        return;
+    }
+
+    if (!bookId) {
+        try {
+            const resBooks = await fetch('/api/books');
+            const books = await resBooks.json();
+            
+            const resAuthors = await fetch('/api/authors');
+            const authors = await resAuthors.json();
+
+            const selectedAuthor = authors.find(a => String(a.id) === String(authorId));
+            if (!selectedAuthor) {
+                showToast("Error: Autora seleccionada no válida", "error");
+                return;
+            }
+
+            const exactBookMatch = books.find(b => 
+                String(b.author_id) === String(authorId) &&
+                b.title.localeCompare(title, 'es', { sensitivity: 'accent' }) === 0
+            );
+
+            if (exactBookMatch) {
+                showToast(`El libro "${exactBookMatch.title}" ya se encuentra registrado para esta autora`, "error");
+                return;
+            }
+
+            let highestScore = 0;
+            let similarBookMatch = null;
+
+            books.forEach(b => {
+                const bookAuthor = b.authors || authors.find(a => String(a.id) === String(b.author_id));
+                if (!bookAuthor) return;
+
+                const isSameAuthor = bookAuthor.first_name.localeCompare(selectedAuthor.first_name, 'es', { sensitivity: 'base' }) === 0 &&
+                                        bookAuthor.last_name.localeCompare(selectedAuthor.last_name, 'es', { sensitivity: 'base' }) === 0;
+                
+                if (!isSameAuthor) return;
+
+                const dbTitle = b.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const inputTitle = title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+                let matchingLettersCount = 0;
+                for (let i = 0; i < inputTitle.length; i++) {
+                    if (dbTitle.includes(inputTitle[i])) {
+                        matchingLettersCount++;
+                    }
+                }
+
+                const matchScore = (matchingLettersCount / inputTitle.length) * 100;
+                
+                if (matchScore >= 80 && matchScore > highestScore) {
+                    highestScore = matchScore;
+                    similarBookMatch = b;
+                }
+            });
+
+            if (similarBookMatch) {
+                openBookCheckModal(
+                    similarBookMatch,
+                    () => {
+                        resetBookForm();
+                        showToast("Se mantuvo el registro existente de la obra", "success");
+                    },
+                    () => {
+                        proceedToSaveBook(bookId);
+                    }
+                );
+                return;
+            }
+
+        } catch (err) {
+            console.error("Error crítico en el validador de duplicidad de libros:", err);
+        }
+    }
+
+    proceedToSaveBook(bookId);
+}
+
+/**
+ * Función auxiliar interna que ejecuta el FETCH real enviando el FormData al Backend
+ */
+async function proceedToSaveBook(bookId) {
+    const formData = new FormData();
     formData.append('title', document.getElementById('title').value);
+    formData.append('isbn', document.getElementById('book-isbn-input')?.value || '');
     formData.append('author_id', document.getElementById('author_select').value);
     formData.append('short_description', document.getElementById('short_description').value);
     formData.append('synopsis', document.getElementById('synopsis').value);
@@ -51,7 +139,7 @@ async function handleBookSubmit(e) {
     formData.append('genre', document.getElementById('genre').value);
 
     const coverInput = document.getElementById('cover_file');
-    if (coverInput.files[0]) {
+    if (coverInput && coverInput.files[0]) {
         formData.append('cover_file', coverInput.files[0]);
     }
 
@@ -73,7 +161,7 @@ async function handleBookSubmit(e) {
             loadBooksTable();
         }
     } catch (err) {
-        console.error("Error API handleBookSubmit:", err);
+        console.error("Error API al intentar guardar el libro en proceedToSaveBook:", err);
     }
 }
 
@@ -114,6 +202,10 @@ async function loadBooksTable() {
 async function prepareBookEdit(id) {
     const res = await fetch(`/api/books/${id}`);
     const b = await res.json();
+
+    if (document.getElementById('book-isbn-input')) {
+        document.getElementById('book-isbn-input').value = b.isbn || '';
+    }
 
     document.getElementById('book-id').value = b.id;
     document.getElementById('title').value = b.title;
@@ -161,71 +253,8 @@ async function loadConfig() {
         const res = await fetch('/api/config/google-books');
         const config = await res.json();
         BOOKS_API_KEY = config.apiKey;
-        console.log("Evidencia: Configuración de Books API cargada exitosamente.");
     } catch (err) {
         console.error("Anomalía: Error al cargar la configuración de la API:", err);
-    }
-}
-
-/**
- * Consulta de metadatos bibliográficos mediante Google Books API.
- * Implementa gestión de estados (spinners) y persistencia en caché local.
- */
-async function searchBookInGoogle() {
-    const titleInput = document.getElementById('title');
-    const title = titleInput.value;
-    const searchBtn = document.querySelector('.btn-api-search');
-    
-    if (!title) {
-        showToast("Error: Ingrese un título para la consulta externa", "error");
-        return;
-    }
-
-    // Gestión del estado de carga en interfaz
-    searchBtn.disabled = true;
-    const originalText = searchBtn.innerText;
-    searchBtn.innerText = "Cargando...";
-
-    try {
-        // Estrategia de optimización: Validación de caché local
-        const cacheKey = `book_cache_${title.toLowerCase().trim()}`;
-        const cachedResult = localStorage.getItem(cacheKey);
-
-        if (cachedResult) {
-            console.log("Evidencia: Datos recuperados de LocalStorage.");
-            const bookInfo = JSON.parse(cachedResult);
-            fillFormWithData(bookInfo);
-            showToast("Datos recuperados de la caché local", "success");
-            return;
-        }
-
-        // Consumo de datos dinámicos mediante Axios
-        const response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
-            params: {
-                q: `intitle:${title}`,
-                key: BOOKS_API_KEY
-            }
-        });
-
-        if (response.data.totalItems > 0) {
-            const bookInfo = response.data.items[0].volumeInfo;
-            
-            // Persistencia en caché para optimización de rendimiento
-            localStorage.setItem(cacheKey, JSON.stringify(bookInfo));
-            
-            fillFormWithData(bookInfo);
-            showToast("Datos recuperados de Google Books", "success");
-            
-        } else {
-            showToast("No se encontraron registros coincidentes", "error"); 
-        }
-    } catch (error) {
-        console.error("Anomalía en la integración externa:", error.message);
-        showToast("Error de conexión con el servicio externo", "error"); 
-    } finally {
-        // Restablecimiento de la interactividad del control
-        searchBtn.disabled = false;
-        searchBtn.innerText = originalText;
     }
 }
 
@@ -265,12 +294,12 @@ function toggleNewAuthorForm() {
 }
 
 /**
- * Persistencia de entidades de tipo Autora.
+ * Persistencia de entidades de tipo Autora con control interactivo de duplicados
  */
 async function saveAuthor() {
     const id = document.getElementById('edit-author-id')?.value; 
-    const first_name = document.getElementById('new-author-first-name').value;
-    const last_name = document.getElementById('new-author-last-name').value;
+    const first_name = document.getElementById('new-author-first-name').value.trim();
+    const last_name = document.getElementById('new-author-last-name').value.trim();
     const country = document.getElementById('new-author-country').value;
     const bio = document.getElementById('new-author-bio').value;
 
@@ -279,6 +308,82 @@ async function saveAuthor() {
         return;
     }
 
+    if (!id) {
+        try {
+            const resAuthors = await fetch('/api/authors');
+            const authors = await resAuthors.json();
+
+            const exactMatch = authors.find(a => 
+                a.first_name.localeCompare(first_name, 'es', { sensitivity: 'accent' }) === 0 &&
+                a.last_name.localeCompare(last_name, 'es', { sensitivity: 'accent' }) === 0
+            );
+
+            if (exactMatch) {
+                const select = document.getElementById('author_select');
+                if (select) select.value = exactMatch.id;
+                
+                resetAuthorForm();
+                document.getElementById('new-author-section').style.display = 'none';
+                showToast(`La autora "${exactMatch.first_name} ${exactMatch.last_name}" ya existe en el registro`, "error");
+                return; 
+            }
+
+            let highestAuthorScore = 0;
+            let similarAuthor = null;
+
+            authors.forEach(a => {
+                const dbFullName = `${a.first_name} ${a.last_name}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const inputFullName = `${first_name} ${last_name}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+                let matchingLettersCount = 0;
+                for (let i = 0; i < inputFullName.length; i++) {
+                    if (dbFullName.includes(inputFullName[i])) {
+                        matchingLettersCount++;
+                    }
+                }
+
+                const matchScore = (matchingLettersCount / inputFullName.length) * 100;
+
+                if (matchScore >= 80 && matchScore > highestAuthorScore) {
+                    highestAuthorScore = matchScore;
+                    similarAuthor = a;
+                }
+            });
+            
+            if (similarAuthor) {
+                openAuthorCheckModal(
+                    similarAuthor,
+                    () => {
+                        const select = document.getElementById('author_select');
+                        if (select) select.value = similarAuthor.id;
+                        resetAuthorForm();
+                        document.getElementById('new-author-section').style.display = 'none';
+                        showToast(`Se vinculó la autora existente: ${similarAuthor.first_name}`, "success");
+                    },
+                    () => {
+                        proceedToSaveAuthor({ first_name, last_name, country, bio }, id);
+                    }
+                );
+
+                const btnForce = document.getElementById('btn-modal-force-create');
+                if (btnForce) {
+                    btnForce.disabled = false;
+                }
+                return;
+            }
+
+        } catch (err) {
+            console.error("Error en el validador de apellidos:", err);
+        }
+    }
+
+    proceedToSaveAuthor({ first_name, last_name, country, bio }, id);
+}
+
+/**
+ * Función auxiliar interna que ejecuta el FETCH real hacia el Backend
+ */
+async function proceedToSaveAuthor(data, id) {
     const url = id ? `/api/authors/${id}` : '/api/authors';
     const method = id ? 'PUT' : 'POST';
 
@@ -289,17 +394,21 @@ async function saveAuthor() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
-            body: JSON.stringify({ first_name, last_name, country, bio })
+            body: JSON.stringify(data)
         });
 
         if (res.ok) {
             showToast("Datos de autora persistidos correctamente", "success");
             resetAuthorForm();
-            document.getElementById('new-author-section').style.display = 'none';
-            fetchAuthors();
+            if (document.getElementById('new-author-section')) {
+                document.getElementById('new-author-section').style.display = 'none';
+            }
+            if (typeof fetchAuthors === "function") {
+                fetchAuthors();
+            }
         }
     } catch (err) {
-        console.error("Error API saveAuthor:", err);
+        console.error("Error API proceedToSaveAuthor:", err);
     }
 }
 
@@ -389,4 +498,158 @@ function showToast(message, type = 'success') {
             }
         }, 500);
     }, 3000);
+}
+
+/**
+ * Buscador Único Inteligente (ISBN o Título)
+ */
+async function smartSearchInGoogle() {
+    const searchInput = document.getElementById('book-search-input');
+    const query = searchInput ? searchInput.value.trim() : '';
+    const searchBtn = document.getElementById('btn-google-search');
+
+    if (!query) {
+        showToast("Error: Ingrese un título o un número ISBN para buscar", "error");
+        return;
+    }
+
+    if (searchBtn) {
+        searchBtn.disabled = true;
+        searchBtn.innerText = "Cargando...";
+    }
+
+    const isIsbn = /^[0-9\- ]+$/.test(query);
+    
+    const url = isIsbn 
+        ? `/api/books/fetch-google/${query.replace(/[- ]/g, "")}` 
+        : `/api/books/search-google-title/${encodeURIComponent(query)}`;
+
+    try {
+        const res = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        const result = await res.json();
+
+        if (!res.ok || !result.success) {
+            showToast("No se encontró información para esta obra en el registro externo", "error");
+            return;
+        }
+
+        const volumeInfo = result.data.volumeInfo || {};
+
+        let foundIsbn = '';
+        if (volumeInfo.industryIdentifiers) {
+            const isbn13 = volumeInfo.industryIdentifiers.find(id => id.type === 'ISBN_13');
+            const isbn10 = volumeInfo.industryIdentifiers.find(id => id.type === 'ISBN_10');
+            foundIsbn = isbn13 ? isbn13.identifier : (isbn10 ? isbn10.identifier : '');
+        }
+
+        document.getElementById('title').value = volumeInfo.title || '';
+        document.getElementById('synopsis').value = volumeInfo.description || '';
+        document.getElementById('short_description').value = volumeInfo.description ? volumeInfo.description.substring(0, 150) + '...' : '';
+        document.getElementById('publisher').value = volumeInfo.publisher || '';
+        document.getElementById('year').value = volumeInfo.publishedDate ? volumeInfo.publishedDate.substring(0, 4) : '';
+        document.getElementById('genre').value = volumeInfo.categories ? volumeInfo.categories[0] : '';
+        
+       if (document.getElementById('book-isbn-input')) {
+            document.getElementById('book-isbn-input').value = isIsbn ? query.replace(/[- ]/g, "") : foundIsbn;
+        }
+
+        showToast("Información de la obra recuperada con éxito", "success");
+
+    } catch (err) {
+        console.error("Error en la búsqueda unificada:", err);
+        showToast("Error de comunicación con el servidor local", "error");
+    } finally {
+        if (searchBtn) {
+            searchBtn.disabled = false;
+            searchBtn.innerText = "Buscar";
+        }
+    }
+}
+
+/**
+ * Abre el modal de advertencia mostrando detalladamente la autora similar encontrada
+ */
+function openAuthorCheckModal(existingAuthor, onUseExisting, onForceCreate) {
+    const detailsContainer = document.getElementById('modal-author-details');
+    
+    if (detailsContainer) {
+        detailsContainer.innerHTML = `
+            <strong>${existingAuthor.first_name} ${existingAuthor.last_name}</strong><br>
+            <span><strong>País de origen:</strong> ${existingAuthor.country || 'No especificado'}</span><br>
+            <p><strong>Biografía:</strong> ${existingAuthor.bio || 'Sin reseña registrada.'}</p>
+        `;
+    }
+    
+    const btnUse = document.getElementById('btn-modal-use-existing');
+    const btnForce = document.getElementById('btn-modal-force-create');
+
+    if (btnUse) {
+        btnUse.onclick = () => {
+            onUseExisting();
+            closeAuthorCheckModal();
+        };
+    }
+
+    if (btnForce) {
+        btnForce.onclick = () => {
+            onForceCreate();
+            closeAuthorCheckModal();
+        };
+    }
+
+    const modal = document.getElementById('author-check-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+/**
+ * Cierra el modal de advertencia ocultando el contenedor
+ */
+function closeAuthorCheckModal() {
+    const modal = document.getElementById('author-check-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+/**
+ * Abre el modal de advertencia mostrando el libro similar encontrado
+ */
+function openBookCheckModal(existingBook, onUseExisting, onForceCreate) {
+    const detailsContainer = document.getElementById('modal-book-details');
+    if (detailsContainer) {
+        detailsContainer.innerHTML = `
+            <strong>${existingBook.title}</strong><br>
+            <span><strong>Año:</strong> ${existingBook.year || 'No especificado'}</span><br>
+            <p><strong>Reseña:</strong> ${existingBook.short_description || 'Sin reseña corta.'}</p>
+        `;
+    }
+
+    document.getElementById('btn-modal-use-existing-book').onclick = () => {
+        onUseExisting();
+        closeBookCheckModal();
+    };
+
+    document.getElementById('btn-modal-force-create-book').onclick = () => {
+        onForceCreate();
+        closeBookCheckModal();
+    };
+
+    const modal = document.getElementById('book-check-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+/**
+ * Cierra el modal de libros
+ */
+function closeBookCheckModal() {
+    const modal = document.getElementById('book-check-modal');
+    if (modal) modal.style.display = 'none';
 }

@@ -6,7 +6,7 @@
     <link rel="icon" href="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4d6/512.png" type="image/png">
     <title>Catálogo de Escritoras Latinoamericanas</title>
     
-    <meta name="description" content="Catálogo digital de las mejores escritoras latinoamericanas, incluyendo obras de Isabel Allende, Mariana Enríquez y más.">
+    <meta name="description" content="Catálogo digital de las mejores escritoras latinoamericanas, incluyendo obras de Isabel Allende, Mariana Enriquez y más.">
     
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,6 +14,29 @@
     <header class="main-header" role="banner">
         <h1>Escritoras Latinoamericanas</h1>
     </header>
+
+    <div class="catalog-controls">
+        <div class="filter-group">
+            <label for="search-input">Buscar publicaciones</label>
+            <input type="text" 
+                id="search-input" 
+                oninput="filterAndOrderCatalog()" 
+                placeholder="Buscar por libro o autora..." 
+                aria-label="Escriba aquí para filtrar los libros por título o nombre de la autora en tiempo real">
+        </div>
+    
+        <div class="filter-group">
+            <label for="order-select">Orden alfabético</label>
+            <select id="order-select" 
+                onchange="filterAndOrderCatalog()" 
+                aria-label="Seleccione el criterio de ordenación para el catálogo de libros">
+                <option value="author-az">Apellido Autora: A a la Z</option>
+                <option value="author-za">Apellido Autora: Z a la A</option>
+                <option value="az">Título: A a la Z</option>
+                <option value="za">Título: Z a la A</option>
+            </select>
+        </div>
+    </div>
 
     <main id="catalog-container" class="catalog-container" aria-label="Catálogo de libros disponibles">
     </main>

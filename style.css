@@ -456,3 +456,162 @@ th, td {
     opacity: 0;
     transition: opacity 0.5s ease;
 }
+
+/* =========================================
+   11. CONTROLES DEL CATÁLOGO (INDEX.HTML)
+   ========================================= */
+.catalog-controls {
+  max-width: 600px;
+  margin: 0 auto 30px auto; 
+  padding: 0 20px;          
+  display: flex;
+  gap: 20px;                
+}
+
+.catalog-controls .filter-group {
+  display: flex;
+  flex-direction: column;   
+  flex: 1;                 
+}
+
+.catalog-controls label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #5d4037;          
+}
+
+@media (max-width: 768px) {
+  .catalog-controls {
+    flex-direction: column; 
+    gap: 15px;
+  }
+}
+
+/* =========================================
+   12. COMPONENTES DE MODALES INTERACTIVOS
+   ========================================= */
+
+.custom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 8px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.matching-author-card, #modal-book-details {
+  background-color: #fdfaf5;
+  border-left: 4px solid #8b4513; 
+  padding: 15px;
+  margin: 15px 0;
+  text-align: left;
+  border-radius: 0 6px 6px 0;
+}
+
+.matching-author-card h4 {
+  margin: 0 0 5px 0;
+  color: #4e342e;
+  font-size: 1.1rem;
+}
+
+.modal-question {
+  font-weight: bold;
+  margin-top: 15px;
+  color: #4e342e;
+}
+
+.modal-actions-row {
+  margin-top: 25px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-modal-primary { 
+  background-color: #7d5a44; 
+  color: white; 
+  border: 1px solid #d2b48c; 
+  padding: 10px 20px; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  font-weight: bold;
+  min-width: 140px;
+  transition: background 0.2s;
+}
+
+.btn-modal-primary:hover {
+  background-color: #5d4037;
+}
+
+.btn-modal-secondary { 
+  background-color: #eeeeee; 
+  color: #4e342e; 
+  border: 1px solid #d2b48c; 
+  padding: 10px 20px; 
+  border-radius: 6px; 
+  cursor: pointer;
+  min-width: 140px;
+  transition: background 0.2s;
+}
+
+.btn-modal-secondary:hover {
+  background-color: #e2e8f0;
+}
+
+.btn-modal-cancel { 
+  background-color: #cd5c5c; 
+  color: white; 
+  border: none; 
+  padding: 10px 20px; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  font-weight: bold;
+}
+
+#modal-author-details strong {
+  font-size: 1.1rem;
+  color: #2d3748;
+}
+
+#modal-author-details span {
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+#modal-author-details p {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin: 6px 0 0 0;
+}
+
+#modal-book-details strong {
+  font-size: 1.1rem;
+  color: #2d3748;
+}
+
+#modal-book-details span {
+  font-size: 0.9rem;
+  color: #4a5568;
+}
+
+#modal-book-details p {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin: 6px 0 0 0;
+}
